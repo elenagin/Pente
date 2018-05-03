@@ -1,6 +1,9 @@
 /**
- *@tablero.c
- *Este programa crea el tablero del juego usando una matriz tipo char, coloca la ficha recibida en la posic *ión indicada, las cuales son char e int en ese respectivo orden, checa si se comen fichas, si se gana el  *juego, si la posición estaba ocupada, si los datos recibidos no son correctos y la salida son returns.
+ *@tablerocodigo.c
+ *Este programa crea el tablero del juego usando una matriz tipo char, coloca la ficha recibida 
+ *en la posición indicada, las cuales son char e int en ese respectivo orden, checa si se comen
+ *fichas, si se gana el juego, si la posición estaba ocupada, si los datos recibidos no son 
+ *correctos y la salida son returns.
  *@Mariana
  *@25/04/2018
  */
@@ -8,17 +11,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "listatablero.h"
 
 #define DIMTABLERO 20
 
 char tablero[DIMTABLERO][DIMTABLERO];
 static int comidas1, comidas2; //Para saber cuantas fichas de cada tipo se han consumido.
+static char ultimocolor=0; //comprobar que las fichas sean alternadas
 
 /**
  *Esta función prepara el tablero para iniciar un juego nuevo (lo "limpia")
  *Esta función no recibe ningún parámetro ni manda ningún resultado.
  *@Mariana 
- *@return void
  */
 void limpiartablero(void)
 {
@@ -32,11 +36,13 @@ void limpiartablero(void)
     }
   comidas1=0;
   comidas2=0;
+  ultimocolor=0;
 }
 
 /**
  *Esta función determina si se juntó una fila de 5 fichas en cualquier dirección.
- *Recibe una n ya que esta función también se utiliza para la función de ganar2, donde se checan 4 fichas,  *no 5.
+ *Recibe una n ya que esta función también se utiliza para la función de ganar2, 
+ *donde se checan 4 fichas, no 5.
  *Regresando 1 si sí gana un jugador.
  *Regresa 0 si todavía nadie gana.
  *@Mariana
@@ -151,14 +157,16 @@ static int ganar1(char ficha, int i, int j, int n, int *x1, int *y1, int *x2, in
 }
 
 /**
- *Esta función determina si se han juntado 5 filas de 4 fichas consecutivas en cualquier dirección, llama a *ganar1, donde se ve si hay 4 fichas consecutivas, y aqui se lleva un contador para saber si hay 5 filas d *e dicha condición.
+ *Esta función determina si se han juntado 5 filas de 4 fichas consecutivas en cualquier dirección,
+ *llama a ganar1, donde se ve si hay 4 fichas consecutivas, y aqui se lleva un contador para saber 
+ *si hay 5 filas de dicha condición.
  *Regresa 1 si alguien gana.
  *Regresa 0 si nadie ha ganado.
  *@Mariana
  *@Param char ficha Color de ficha
  *@return int 
  */
-int ganar2(char ficha)
+static int ganar2(char ficha)
 {
   int i, j, k;
   int posiciones[5][4]; //posiciones de 4 fichas
@@ -200,25 +208,78 @@ int ganar2(char ficha)
 }
 
 /**
+ *Esta función determina si un jugador come dos o más fichas del oponente, se llama 8 veces
+ *desde la función ponerficha para cubrir los 8 casos posibles (direcciones) y se parte desde 
+ *la posición de la ficha que se acaba de colocar.
+ *Regresa 2 si se comen fichas.
+ *Regresa 0 si no pasa nada.
+ *@Mariana
+ *@Param int i posición en tablero
+ *@Param int j Posición en tablero
+ *@Param int incrementoi Es la posición en el tablero de i, solo que puede llegar sin modificación,
+ *con un +1(por si se incrementa la posición en i), o con -1 (si se disminuye la posición de i)
+ *@Param int incrementoj Es la posición en el tablero de j, solo que puede llegar sin modificación,
+ *con un +j(por si se incrementa la posición en j), o con -1 (si se disminuye la posición de i)
+ *@return int 
+ */
+static int Comer(int i, int j, int incrementoi, int incrementoj)
+{
+  int i2, j2, i3, j3, i4, j4;
+  char ficha, fichacontraria;
+  ficha=tablero[i][j];
+  i2=i+incrementoi;
+  i3=i2+incrementoi;
+  i4=i3+incrementoi;
+  j2=j+incrementoj;
+  j3=j2+incrementoj;
+  j4=j3+incrementoj;/*Asignamos una i y una j diferente a la posición en i, j para para saber si se come una ficha(i2, j2, i3, j3 deben de ser ficha contraria y i4, j4 deben de ser la ficha para que se coman)*/
+  if((i4<0)||(i4>=DIMTABLERO))
+    return 0;
+  if((j4<0)||(j4>=DIMTABLERO))
+    return 0;
+  if(ficha=='1')
+    {
+      fichacontraria='2';
+    }
+  else
+    {
+      fichacontraria='1';
+    }
+  if((tablero[i2][j2]==fichacontraria)&&
+     (tablero[i3][j3]==fichacontraria)&&
+     (tablero[i4][j4]==ficha))
+    {
+      tablero[i2][j2]='0';
+      tablero[i3][j3]='0';
+      return 2;
+    }
+  return 0;
+}
+
+/**
  *Esta función coloca la ficha en el tablero.
- *Recibe la ficha ya sea 1 o 2 y la posiciona en el tablero i, j.
+ *Recibe la ficha ya sea 1 o 2, la posiciona en el tablero i, j y un 0 si se debe agregar la jugada a la lista.
  *Regresa -1 si ya estaba ocupado
  *Regresa -2 con coordenadas inválidas
  *Regresa -3 si las fichas son inválidas
  *Regresa -4 si es empate
+ *Regresa -5 si es jugada del mismo color
  *Regresa 1 si fue aceptado el movimiento
  *Regresa 2 si gana el juego
- *Regresa 3 si come fichas y 4 si gana y come.
+ *Regresa 3 si come fichas 
+ *Regresa 4 si gana y come.
  *@Mariana
  *@Param char ficha  La ficha a colocar
  *@Param int i  La posición del talero
  *@Param int j  Posición del tablero
+ *@Param int guardar Si es cero guarda movimiento en la lista.
  *@return int  
  */
-int ponerficha(char ficha, int i, int j)
+int ponerficha(char ficha, int i, int j, int guardar)
 {
   int x, y;
   int cont=0;
+  int comidas=0;
   if(i<0 || i>=DIMTABLERO)
     {
       return -2; 
@@ -249,36 +310,84 @@ int ponerficha(char ficha, int i, int j)
     {
       return -1;
     }
+  if(ultimocolor==ficha)
+    {
+      return -5;
+    }
+  ultimocolor=ficha;
+  if(guardar!=0)
+    {
+      AgregarMov(i, j, ficha);
+    }
   tablero[i][j]=ficha;
   if(ganar1(ficha, i, j, 5, NULL, NULL, NULL, NULL)==1)
-    return 4;
+    return 2;
   if(ganar2(ficha)==1)
-    return 4;
+    return 2;
+  comidas+=Comer(i, j, -1,  0);
+  comidas+=Comer(i, j, -1,  1);
+  comidas+=Comer(i, j,  0,  1);
+  comidas+=Comer(i, j,  1,  1);
+  comidas+=Comer(i, j,  1,  0);
+  comidas+=Comer(i, j,  1, -1);
+  comidas+=Comer(i, j,  0, -1);
+  comidas+=Comer(i, j, -1, -1);/*Aquí es donde se varían los valores de i y j para saber si se comen varias fichas. Se suman a comidas con el return 2. Comidas1 es la cantidad de comidas que ha hecho el jugador 2, o sea cuantas fichas comidas hay del 1, y comidas2 vice versa.*/
+  if(comidas>0)
+    {
+      if(ficha=='1')
+	{
+	  comidas2+=comidas;
+	  if(comidas2>=10)
+	    {
+	      return 4;
+	    }
+	  else
+	    {
+	      return 3;
+	    }
+	}
+      else
+	{
+	  comidas1+=comidas;
+	  if(comidas1>=10)
+	    {
+	      return 4;
+	    }
+	  else
+	    return 3;
+	}
+    }
   return 1;
 }
 
-/*int main(void)
+/*
+int main(void)
 {
+  PtrMovimiento p;
   limpiartablero();
-  printf("resultado: %d\n", ponerficha('1', 1, 1));
-  printf("resultado: %d\n", ponerficha('1', 2, 2));
-  printf("resultado: %d\n", ponerficha('1', 3, 3));
-  printf("resultado: %d\n", ponerficha('1', 4, 4));
-  printf("resultado: %d\n", ponerficha('1', 5, 14));
-  printf("resultado: %d\n", ponerficha('1', 6, 13));
-  printf("resultado: %d\n", ponerficha('1', 7, 12));
-  printf("resultado: %d\n", ponerficha('1', 8, 11));
-  printf("resultado: %d\n", ponerficha('1', 7, 8));
-  printf("resultado: %d\n", ponerficha('1', 8, 8));
-  printf("resultado: %d\n", ponerficha('1', 9, 8));
-  printf("resultado: %d\n", ponerficha('1', 10, 8));
-  printf("resultado: %d\n", ponerficha('1', 8, 8));
-  printf("resultado: %d\n", ponerficha('1', 8, 9));
-  printf("resultado: %d\n", ponerficha('1', 8, 10));
-  printf("resultado: %d\n", ponerficha('1', 8, 11));
-  printf("resultado: %d\n", ponerficha('1', 13, 4));
-  printf("resultado: %d\n", ponerficha('1', 13, 5));
-  printf("resultado: %d\n", ponerficha('1', 13, 6));
-  printf("resultado: %d\n", ponerficha('1', 13, 7));
+  printf("resultado: %d\n", ponerficha('1', 1, 1, 1));
+  printf("resultado: %d\n", ponerficha('1', 1, 2, 1));
+  printf("resultado: %d\n", ponerficha('2', 2, 2, 1));
+  printf("resultado: %d\n", ponerficha('1', 2, 8, 1));
+  printf("resultado: %d\n", ponerficha('2', 3, 3, 1));
+  printf("resultado: %d\n", ponerficha('1', 4, 4, 1));
+  printf("resultado: %d\n", ponerficha('2', 2, 10, 1));
+  printf("resultado: %d\n", ponerficha('1', 2, 9, 1));
+  printf("resultado: %d\n", ponerficha('2', 5, 7, 1));
+  printf("resultado: %d\n", ponerficha('1', 4, 7, 1));
+  printf("resultado: %d\n", ponerficha('2', 8, 7, 1));
+  printf("resultado: %d\n", ponerficha('1', 3, 7, 1));
+  printf("resultado: %d\n", ponerficha('2', 2, 7, 1));
+  printf("comidas1 : %d\n", comidas1);
+  printf("comidas2 : %d\n", comidas2);
+  GuardarLista("prueba1.txt");
+  LeerLista("prueba1.txt");
+  p=raiz;
+  while(p)
+    {
+      printf("resultado: %d\n", ponerficha(p->color, p->i, p->j, 0));
+      p=p->siguiente;
+    }
 }
-*/
+  */
+
