@@ -3,15 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct parametroventana
+typedef struct parametroVentana
 {
+  gint BanderaDeInicio;
   GtkWidget *VentanaLogo;
   GtkWidget *VentanaInstrucciones;
   GtkWidget *VentanaJuego;
-}typeVentana;
+}typeVentana, *typeVentanaPtr;
 
-void VentanaLogo (gint *argc, gchar ***argv);
-void StopTheApp(GtkWidget *ventana, gpointer data);
-void Hide(GtkWidget *imagen, gpointer data);
-void Hide2(GtkWidget *imagen, gpointer data);
-void VentanaInstrucciones(GtkWidget *ventana, gpointer data);
