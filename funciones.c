@@ -4,6 +4,8 @@
 
 void StopTheApp(GtkWidget *ventana, gpointer data)
 {
+  typeVentanaPtr ventanas=(typeVentana*)data;
+  
   free(data);
   gtk_main_quit();
 }
@@ -12,5 +14,3 @@ void Hide (GtkWidget *imagen, gpointer data)
 {
   gtk_widget_hide(imagen);
 }
-
-
