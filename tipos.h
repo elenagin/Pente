@@ -3,14 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct parametroVentana
-{
-  GtkWidget *VentanaLogo;
-  GtkWidget *VentanaInstrucciones;
-  GtkWidget *VentanaNuevoAnterior;
-  GtkWidget *VentanaJuego;
-}typeVentana, *typeVentanaPtr;
-
 /*******Estructuras a utilizar*************/
 
 
@@ -63,3 +55,11 @@ typedef struct def_Widgets
   ptrVentanas Nodo3;
 }tWidgets, *ptrWidgets;
 
+typedef struct parametroVentana
+{
+  GtkWidget *VentanaLogo;
+  GtkWidget *VentanaInstrucciones;
+  GtkWidget *VentanaNuevoAnterior;
+  GtkWidget *VentanaJuego;
+  ptrWidgets paquete;
+}typeVentana, *typeVentanaPtr;

@@ -1,169 +1,46 @@
+/*****************************************************************
+ *
+ * Archivo:	final.c
+ * Autores:
+ * Descripcion: Codigo Fuente para implementar el programa
+ *		        de Pente en base a funciones de GTK+
+ *              desarrollando un ambiente grafico para que los
+ *              usuarios puedan jugar
+ * Uso: Iniciar el programa, abrir el menu, agregar Widgets
+ *      inicializar el ambiente.
+ * Fecha:
+ *
+ ****************************************************************/
+
+/*Archivos de Inclusion*/
 #include <gtk/gtk.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include "tipos.h"
-#include "funciones.h"
 #include "senales.h"
+#include "funciones.h"
 
-void VentanaLogo (gint *argc, gchar ***argv)
+/*Funciones Prototipo*/
+void VentanaPrincipal(ptrWidgets Widgets);
+void VentanaJuego(ptrWidgets Widgets);
+void VentanaBienvenida(ptrWidgets Widgets);
+
+/*Funcion principal*/
+int main(int argc, char *argv[])
 {
-  GtkWidget *imagen, *boton, *vbox;
-  GdkPixbuf *pixbuf;
-  typeVentanaPtr ventanas; 
-
-  ventanas = malloc(sizeof(typeVentana));
-  vbox = gtk_vbox_new(TRUE,5);
-  ventanas->VentanaLogo = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title(GTK_WINDOW (ventanas->VentanaLogo), "Pente");
-  gtk_window_set_position(GTK_WINDOW(ventanas->VentanaLogo), GTK_WIN_POS_CENTER);
-  gtk_window_set_default_size(GTK_WINDOW(ventanas->VentanaLogo),500,500);
-  gtk_window_set_resizable(GTK_WINDOW(ventanas->VentanaLogo), FALSE);
-  gtk_container_border_width(GTK_CONTAINER(ventanas->VentanaLogo),5);
-
-  pixbuf = gdk_pixbuf_new_from_file_at_scale("logo.png", 500, 500, FALSE, NULL);
-  imagen = gtk_image_new_from_pixbuf(pixbuf);
-  boton= gtk_button_new();
+  ptrWidgets Widgets;/*Apuntada a estructura*/
+  /*Inicializamos el ambiente*/
+  gtk_init(&argc,&argv);
+  Widgets=(ptrWidgets)malloc(sizeof(tWidgets));/*Creamos nuestro paquete de Widgets*/
+  Widgets->Nodo3=(ptrVentanas)malloc(sizeof(tVentanas));
+  Widgets->Nodo=(ptrTablero)malloc(sizeof(tTablero));
+  Widgets->Nodo2=(ptrOpciones)malloc(sizeof(tOpciones));//creacion de widgets
+  VentanaPrincipal(Widgets);//Se crea la ventana principal
+  VentanaJuego(Widgets);//Se crea la ventana de nueva partida
+  VentanaBienvenida(Widgets);//Se crea la ventana de presentacion y se espera a que se le de aceptar
+  gtk_widget_show_all(Widgets->Nodo3->VenP);//Mostramos todos los widgests incluidos en la ventana
+  gtk_main();/*funcion inicio iterada*/
   
-  gtk_widget_show (imagen);
-
-  gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(VentanaInstrucciones), ventanas);
-  gtk_signal_connect(GTK_OBJECT(ventanas->VentanaLogo),"destroy",GTK_SIGNAL_FUNC(StopTheApp),ventanas);
-  gtk_container_add(GTK_CONTAINER(ventanas->VentanaLogo), boton);
-  gtk_container_add(GTK_CONTAINER(boton), vbox);
-  gtk_container_add(GTK_CONTAINER(vbox), GTK_WIDGET(imagen));
-  
-  gtk_widget_show_all(ventanas->VentanaLogo); 
-}
-
-void VentanaInstrucciones(GtkWidget *widget, gpointer data)
-{ 
-  GtkWidget *imagen, *boton, *hbox;
-  GdkPixbuf *pixbuf;
-  typeVentanaPtr ventanas=(typeVentana*)data;
-  
-  gtk_widget_hide_all(ventanas->VentanaLogo);
-  hbox= gtk_hbox_new (TRUE, 5);
-  ventanas->VentanaInstrucciones = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title(GTK_WINDOW (ventanas->VentanaInstrucciones), "Pente");
-  gtk_window_set_position(GTK_WINDOW(ventanas->VentanaInstrucciones), GTK_WIN_POS_CENTER);
-  gtk_window_set_default_size(GTK_WINDOW(ventanas->VentanaInstrucciones),500,500);
-  gtk_container_border_width(GTK_CONTAINER(ventanas->VentanaInstrucciones),5);
-  
-  pixbuf = gdk_pixbuf_new_from_file_at_scale("instrucciones.png", 500, 500, FALSE, NULL);
-  imagen = gtk_image_new_from_pixbuf(pixbuf);
-  boton= gtk_button_new();  
-  gtk_widget_show (imagen);
-
-  gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(VentanaNuevoAnterior), ventanas);
-  gtk_signal_connect(GTK_OBJECT(ventanas->VentanaInstrucciones),"destroy",GTK_SIGNAL_FUNC(StopTheApp), ventanas);
-  
-  gtk_container_add(GTK_CONTAINER(ventanas->VentanaInstrucciones), boton);
-  gtk_container_add(GTK_CONTAINER(boton), hbox);
-  gtk_container_add(GTK_CONTAINER(hbox), GTK_WIDGET(imagen));
-  
-  gtk_widget_show_all(ventanas->VentanaInstrucciones); 
-}
-
-void VentanaNuevoAnterior(GtkWidget *widget, gpointer data)
-{ 
-  GtkWidget *vbox, *hbox, *boton1, *boton2;
-  typeVentana *ventanas=(typeVentana*)data;
-  
-  gtk_widget_hide_all(ventanas->VentanaInstrucciones);
-
-  ventanas->VentanaNuevoAnterior = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title(GTK_WINDOW (ventanas->VentanaNuevoAnterior), "Pente");
-  gtk_window_set_position(GTK_WINDOW(ventanas->VentanaNuevoAnterior), GTK_WIN_POS_CENTER);
-  gtk_window_set_default_size(GTK_WINDOW(ventanas->VentanaNuevoAnterior),500,500);
-  gtk_container_border_width(GTK_CONTAINER(ventanas->VentanaNuevoAnterior),5);
-  
-  vbox= gtk_vbox_new (TRUE, 5);
-  hbox= gtk_hbox_new (TRUE, 5);
-
-  boton1 = gtk_button_new_with_label("Nuevo Juego");
-  gtk_signal_connect(GTK_OBJECT(boton1),"clicked",GTK_SIGNAL_FUNC(VentanaJuego), ventanas);
-  gtk_widget_show(boton1);
-  
-  boton2 = gtk_button_new_with_label("Partida Anterior");
-  gtk_signal_connect(GTK_OBJECT(boton2),"clicked",GTK_SIGNAL_FUNC(Hide), NULL);
-  gtk_widget_show(boton2);
-  
-  gtk_box_pack_start(GTK_BOX(vbox),boton1,TRUE,TRUE,5);
-  gtk_box_pack_start(GTK_BOX(vbox),boton2,TRUE,TRUE,5);
-  gtk_box_pack_start(GTK_BOX(hbox),vbox,TRUE,TRUE,5);
-  gtk_widget_show_all(hbox);
-
-  gtk_signal_connect(GTK_OBJECT(ventanas->VentanaNuevoAnterior),"destroy",GTK_SIGNAL_FUNC(StopTheApp), ventanas);
-  gtk_container_add(GTK_CONTAINER(ventanas->VentanaNuevoAnterior), hbox);
-  
-  gtk_widget_show_all(ventanas->VentanaNuevoAnterior); 
-}
-
-/****************************************************
- * Funcion VentanaJuego:Se establecen todos los     *
- * widgets para poder abrir ventana de juego        *
- * para empezar a jugar el juego de pente.          *
- *                                                  *
- *  Retorno:                                        *
- *  Ventana en Pantalla                             *
- ****************************************************/ 
-void VentanaJuego(GtkWidget *widget, gpointer data)
-{
-
-  /*Variables que usaremos*/
-  GtkWidget *CVJ;
-  int i;
-  const gchar *NombreBoton2;
-  GtkWidget *EtiquetasJ[4], *BotonJOK, *BotonJCancel;
-  typeVentanaPtr Widgets=(typeVentana*)data;
-  //Cajas
-  CVJ=gtk_vbox_new(FALSE,5);//nueva caja vertical
-  for(i=0;i<4;i++)//creacion de cajas horizontales
-    Widgets->paquete->Nodo2->CHJ[i]=gtk_hbox_new(FALSE,3);
-
-  //Ventana
-  Widgets->paquete->Nodo3->VenJ=gtk_window_new(GTK_WINDOW_TOPLEVEL);//creacion de ventana principal
-  gtk_window_set_position(GTK_WINDOW(Widgets->paquete->Nodo3->VenJ),GTK_WIN_POS_CENTER);//definicion de la posicion
-  gtk_window_set_title(GTK_WINDOW(Widgets->paquete->Nodo3->VenJ),"Modo de juego");//damos nombre a la ventana
-  gtk_container_add(GTK_CONTAINER(Widgets->paquete->Nodo3->VenJ),CVJ);//agregamos la caja vertical de jugador a la ventana
-  gtk_window_set_resizable(GTK_WINDOW(Widgets->paquete->Nodo3->VenJ),FALSE);//definimos tamaño de ventana
-  
-  //Nombre Jugador1
-  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->paquete->Nodo2->CHJ[0]);
-  EtiquetasJ[1]=gtk_label_new("Jugador1:");//nueva etiqueta
-  Widgets->paquete->Nodo2->Entry[0]=gtk_entry_new();//nuevo entry
-  gtk_entry_set_max_length(GTK_ENTRY(Widgets->paquete->Nodo2->Entry[0]),30);//tamaño de entry
-  gtk_box_pack_start_defaults (GTK_BOX(Widgets->paquete->Nodo2->CHJ[0]),EtiquetasJ[1]);//agregamos etiqueta a caja horizontal
-  gtk_box_pack_start_defaults (GTK_BOX(Widgets->paquete->Nodo2->CHJ[0]),Widgets->paquete->Nodo2->Entry[0]);//agregamos entry a caja horizontal
-
-  //Nombre Jugador2
-  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->paquete->Nodo2->CHJ[1]);
-  EtiquetasJ[2]=gtk_label_new("Jugador2");//nueva etiqueta
-  Widgets->paquete->Nodo2->Entry[1]=gtk_entry_new();//nuevo entry
-  gtk_entry_set_max_length(GTK_ENTRY(Widgets->paquete->Nodo2->Entry[1]),30);//tamaño de entry
-  gtk_box_pack_start_defaults (GTK_BOX(Widgets->paquete->Nodo2->CHJ[1]),EtiquetasJ[2]);//agregamos etiqueta a caja horizontal
-  gtk_box_pack_start_defaults (GTK_BOX(Widgets->paquete->Nodo2->CHJ[1]),Widgets->paquete->Nodo2->Entry[1]);//agregamos entry a caja horizontal
-  
-  //Orden de tiro
-  EtiquetasJ[3]=gtk_label_new("¿Quien empieza el juego?");//nuevo label
-  Widgets->paquete->Nodo2->BotonInicia[0]=gtk_radio_button_new_with_label(NULL,"Jugador 1");//nuevo boton radio
-  Widgets->paquete->Nodo2->Grupo=gtk_radio_button_get_group(GTK_RADIO_BUTTON(Widgets->paquete->Nodo2->BotonInicia[0]));//definimos orden de boton
-  Widgets->paquete->Nodo2->BotonInicia[1]=gtk_radio_button_new_with_label(Widgets->paquete->Nodo2->Grupo,"Jugador 2");//agregamos nombre a boton
-  gtk_box_pack_start_defaults (GTK_BOX(CVJ),EtiquetasJ[3]);//agregamos label a caja vertical
-  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->paquete->Nodo2->BotonInicia[0]);//agregamos bton iniciala caja vertical
-  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->paquete->Nodo2->BotonInicia[1]);//agregamos los radios boton a la caja vertical
-
-  //Botones
-  BotonJOK=gtk_button_new_from_stock(GTK_STOCK_OK);//nuevo boton OK
-  g_signal_connect(BotonJOK,"clicked",G_CALLBACK(IniciarPartida),Widgets);//llamada a la funcion iniciar partida
-  BotonJCancel=gtk_button_new_from_stock(GTK_STOCK_CANCEL);//nuevo boton CANCEL
-  g_signal_connect(BotonJCancel,"clicked",G_CALLBACK(Esconder),Widgets);//llamada a la funcion esconder
-  
-  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->paquete->Nodo2->CHJ[2]);//agregamos caja horizontal a caja verticalJ
-  gtk_box_pack_start_defaults (GTK_BOX(Widgets->paquete->Nodo2->CHJ[2]),BotonJOK);//boton OK  a caja horizontal 
-  gtk_box_pack_start_defaults (GTK_BOX(Widgets->paquete->Nodo2->CHJ[2]),BotonJCancel);//boton cancel a caja horizontal
-}//VentanaJuego
-
+}//main
 
 /****************************************************
  * Funcion VentanaPrincipal:Se establecen todos los *
@@ -316,3 +193,92 @@ void VentanaPrincipal(ptrWidgets Widgets)
   gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[2]);//incluimos la caja de tiempo en la caja de partida
   
 }//VentanaPrincipal
+
+
+/****************************************************
+ * Funcion VentanaJuego:Se establecen todos los     *
+ * widgets para poder abrir ventana de juego        *
+ * para empezar a jugar el juego de pente.          *
+ *                                                  *
+ *  Retorno:                                        *
+ *  Ventana en Pantalla                             *
+ ****************************************************/ 
+void VentanaJuego(ptrWidgets Widgets)
+{
+
+  /*Variables que usaremos*/
+  GtkWidget *CVJ;
+  int i;
+  const gchar *NombreBoton2;
+  GtkWidget *EtiquetasJ[4], *BotonJOK, *BotonJCancel;
+
+  //Cajas
+  CVJ=gtk_vbox_new(FALSE,5);//nueva caja vertical
+  for(i=0;i<4;i++)//creacion de cajas horizontales
+    Widgets->Nodo2->CHJ[i]=gtk_hbox_new(FALSE,3);
+
+  //Ventana
+  Widgets->Nodo3->VenJ=gtk_window_new(GTK_WINDOW_TOPLEVEL);//creacion de ventana principal
+  gtk_window_set_position(GTK_WINDOW(Widgets->Nodo3->VenJ),GTK_WIN_POS_CENTER);//definicion de la posicion
+  gtk_window_set_title(GTK_WINDOW(Widgets->Nodo3->VenJ),"Modo de juego");//damos nombre a la ventana
+  gtk_container_add(GTK_CONTAINER(Widgets->Nodo3->VenJ),CVJ);//agregamos la caja vertical de jugador a la ventana
+  gtk_window_set_resizable(GTK_WINDOW(Widgets->Nodo3->VenJ),FALSE);//definimos tamaño de ventana
+  
+  //Nombre Jugador1
+  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->Nodo2->CHJ[0]);
+  EtiquetasJ[1]=gtk_label_new("Jugador1:");//nueva etiqueta
+  Widgets->Nodo2->Entry[0]=gtk_entry_new();//nuevo entry
+  gtk_entry_set_max_length(GTK_ENTRY(Widgets->Nodo2->Entry[0]),30);//tamaño de entry
+  gtk_box_pack_start_defaults (GTK_BOX(Widgets->Nodo2->CHJ[0]),EtiquetasJ[1]);//agregamos etiqueta a caja horizontal
+  gtk_box_pack_start_defaults (GTK_BOX(Widgets->Nodo2->CHJ[0]),Widgets->Nodo2->Entry[0]);//agregamos entry a caja horizontal
+
+  //Nombre Jugador2
+  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->Nodo2->CHJ[1]);
+  EtiquetasJ[2]=gtk_label_new("Jugador2");//nueva etiqueta
+  Widgets->Nodo2->Entry[1]=gtk_entry_new();//nuevo entry
+  gtk_entry_set_max_length(GTK_ENTRY(Widgets->Nodo2->Entry[1]),30);//tamaño de entry
+  gtk_box_pack_start_defaults (GTK_BOX(Widgets->Nodo2->CHJ[1]),EtiquetasJ[2]);//agregamos etiqueta a caja horizontal
+  gtk_box_pack_start_defaults (GTK_BOX(Widgets->Nodo2->CHJ[1]),Widgets->Nodo2->Entry[1]);//agregamos entry a caja horizontal
+  
+  //Orden de tiro
+  EtiquetasJ[3]=gtk_label_new("¿Quien empieza el juego?");//nuevo label
+  Widgets->Nodo2->BotonInicia[0]=gtk_radio_button_new_with_label(NULL,"Jugador 1");//nuevo boton radio
+  Widgets->Nodo2->Grupo=gtk_radio_button_get_group(GTK_RADIO_BUTTON(Widgets->Nodo2->BotonInicia[0]));//definimos orden de boton
+  Widgets->Nodo2->BotonInicia[1]=gtk_radio_button_new_with_label(Widgets->Nodo2->Grupo,"Jugador 2");//agregamos nombre a boton
+  gtk_box_pack_start_defaults (GTK_BOX(CVJ),EtiquetasJ[3]);//agregamos label a caja vertical
+  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->Nodo2->BotonInicia[0]);//agregamos bton iniciala caja vertical
+  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->Nodo2->BotonInicia[1]);//agregamos los radios boton a la caja vertical
+
+  //Botones
+  BotonJOK=gtk_button_new_from_stock(GTK_STOCK_OK);//nuevo boton OK
+  g_signal_connect(BotonJOK,"clicked",G_CALLBACK(IniciarPartida),Widgets);//llamada a la funcion iniciar partida
+  BotonJCancel=gtk_button_new_from_stock(GTK_STOCK_CANCEL);//nuevo boton CANCEL
+  g_signal_connect(BotonJCancel,"clicked",G_CALLBACK(Esconder),Widgets);//llamada a la funcion esconder
+  
+  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->Nodo2->CHJ[2]);//agregamos caja horizontal a caja verticalJ
+  gtk_box_pack_start_defaults (GTK_BOX(Widgets->Nodo2->CHJ[2]),BotonJOK);//boton OK  a caja horizontal 
+  gtk_box_pack_start_defaults (GTK_BOX(Widgets->Nodo2->CHJ[2]),BotonJCancel);//boton cancel a caja horizontal
+}//VentanaJuego
+
+
+
+/****************************************************
+ * Funcion VentanaBienvenida:Se establecen todos lo *
+ * widgets para poder abrir ventana de Bienvenida   *
+ * para empezar a jugar el juego de pente.          *
+ *                                                  *
+ *  Retorno:                                        *
+ *  Ventana en Pantalla                             *
+ ****************************************************/
+void VentanaBienvenida(ptrWidgets Widgets)
+{
+  Widgets->Nodo3->M1=gtk_message_dialog_new(GTK_WINDOW(Widgets->Nodo3->VenP),
+					    GTK_DIALOG_DESTROY_WITH_PARENT,
+					    GTK_MESSAGE_OTHER,
+					    GTK_BUTTONS_OK,
+					    "Bienvenido jugador:\nEste programa fue elaborado por:\nMariana Martinez Kobeh\nElena Ginebra\nKarina Almazán");//nuevo mensaje de Dialogo, en este mismo esta ya incluido en el mensaje de dialogo los botones
+  gtk_window_set_position(GTK_WINDOW(Widgets->Nodo3->M1),GTK_WIN_POS_CENTER);//establecer posicion al centro
+  gtk_window_set_title(GTK_WINDOW(Widgets->Nodo3->M1), "Bienvenido");//nombre de la ventana
+  gtk_dialog_run(GTK_DIALOG(Widgets->Nodo3->M1));//correr el cuadro de dialogo
+  gtk_widget_destroy(Widgets->Nodo3->M1);//destruir cuadro de dialogo
+}//VentanaBienvenida
