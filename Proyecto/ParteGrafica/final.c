@@ -34,10 +34,12 @@ int main(int argc, char *argv[])
   Widgets->Nodo3=(ptrVentanas)malloc(sizeof(tVentanas));
   Widgets->Nodo=(ptrTablero)malloc(sizeof(tTablero));
   Widgets->Nodo2=(ptrOpciones)malloc(sizeof(tOpciones));//creacion de widgets
+
+  VentanaBienvenida(Widgets);
   VentanaPrincipal(Widgets);//Se crea la ventana principal
   VentanaJuego(Widgets);//Se crea la ventana de nueva partida
-  VentanaBienvenida(Widgets);//Se crea la ventana de presentacion y se espera a que se le de aceptar
-  gtk_widget_show_all(Widgets->Nodo3->VenP);//Mostramos todos los widgests incluidos en la ventana
+  //VentanaBienvenida(Widgets);//Se crea la ventana de presentacion y se espera a que se le de aceptar
+  //gtk_widget_show_all(Widgets->Nodo3->VentanaLogo);//Mostramos todos los widgests incluidos en la ventana
   gtk_main();/*funcion inicio iterada*/
   
 }//main
@@ -272,13 +274,64 @@ void VentanaJuego(ptrWidgets Widgets)
  ****************************************************/
 void VentanaBienvenida(ptrWidgets Widgets)
 {
-  Widgets->Nodo3->M1=gtk_message_dialog_new(GTK_WINDOW(Widgets->Nodo3->VenP),
-					    GTK_DIALOG_DESTROY_WITH_PARENT,
-					    GTK_MESSAGE_OTHER,
-					    GTK_BUTTONS_OK,
-					    "Bienvenido jugador:\nEste programa fue elaborado por:\nMariana Martinez Kobeh\nElena Ginebra\nKarina Almazán");//nuevo mensaje de Dialogo, en este mismo esta ya incluido en el mensaje de dialogo los botones
-  gtk_window_set_position(GTK_WINDOW(Widgets->Nodo3->M1),GTK_WIN_POS_CENTER);//establecer posicion al centro
-  gtk_window_set_title(GTK_WINDOW(Widgets->Nodo3->M1), "Bienvenido");//nombre de la ventana
-  gtk_dialog_run(GTK_DIALOG(Widgets->Nodo3->M1));//correr el cuadro de dialogo
-  gtk_widget_destroy(Widgets->Nodo3->M1);//destruir cuadro de dialogo
-}//VentanaBienvenida
+  GtkWidget *imagen, *boton, *vbox;
+  GdkPixbuf *pixbuf;
+  //ptrVentanas ventanas;
+  Widgets->Nodo3->VentanaLogo = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  //Widgets->Nodo3->M1=gtk_message_dialog_new(GTK_WINDOW(Widgets->Nodo3->VenP), GTK_DIALOG_DESTROY_WITH_PARENT,GTK_MESSAGE_OTHER, GTK_BUTTONS_OK, "Bienvenido jugador:\nEste programa fue elaborado por:\nMariana Martinez Kobeh\nElena Ginebra\nKarina Almazán");//nuevo mensaje de Dialogo, en este mismo esta ya incluido en el mensaje de dialogo los botones
+  gtk_window_set_position(GTK_WINDOW(Widgets->Nodo3->VentanaLogo),GTK_WIN_POS_CENTER);//establecer posicion al centro
+  gtk_window_set_title(GTK_WINDOW(Widgets->Nodo3->VentanaLogo), "Bienvenido");//nombre de la ventana
+  //gtk_dialog_run(GTK_DIALOG(Widgets->Nodo3->VentanaLogo));//correr el cuadro de dialogo
+  //gtk_widget_destroy(Widgets->Nodo3->VentanaLogo);//destruir cuadro de dialogo 
+
+  vbox = gtk_vbox_new(TRUE,5);
+  //ventanas->VentanaLogo = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  //gtk_window_set_title(GTK_WINDOW (ventanas->VentanaLogo), "Pente");
+  //gtk_window_set_position(GTK_WINDOW(ventanas->VentanaLogo), GTK_WIN_POS_CENTER);
+  gtk_window_set_default_size(GTK_WINDOW(Widgets->Nodo3->VentanaLogo),500,500);
+  gtk_window_set_resizable(GTK_WINDOW(Widgets->Nodo3->VentanaLogo), FALSE);
+  gtk_container_border_width(GTK_CONTAINER(Widgets->Nodo3->VentanaLogo),5);
+
+  pixbuf = gdk_pixbuf_new_from_file_at_scale("logo.png", 500, 500, FALSE, NULL);
+  imagen = gtk_image_new_from_pixbuf(pixbuf);
+  boton= gtk_button_new();
+  
+  gtk_widget_show (imagen);
+
+  gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(Hide), Widgets);
+  gtk_signal_connect(GTK_OBJECT(Widgets->Nodo3->VentanaLogo),"destroy",GTK_SIGNAL_FUNC(StopTheApp), Widgets);
+  gtk_container_add(GTK_CONTAINER(Widgets->Nodo3->VentanaLogo), boton);
+  gtk_container_add(GTK_CONTAINER(boton), vbox);
+  gtk_container_add(GTK_CONTAINER(vbox), GTK_WIDGET(imagen));
+  
+  gtk_widget_show_all(Widgets->Nodo3->VentanaLogo); 
+}
+
+void VentanaInstrucciones(GtkWidget *widget, gpointer data)
+{ 
+  GtkWidget *imagen, *boton, *hbox;
+  GdkPixbuf *pixbuf;
+  ptrVentanas ventanas=(tVentanas*)data;
+  
+  gtk_widget_hide_all(ventanas->VentanaLogo);
+  hbox= gtk_hbox_new (TRUE, 5);
+  ventanas->VentanaInstrucciones = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW (ventanas->VentanaInstrucciones), "Pente");
+  gtk_window_set_position(GTK_WINDOW(ventanas->VentanaInstrucciones), GTK_WIN_POS_CENTER);
+  gtk_window_set_default_size(GTK_WINDOW(ventanas->VentanaInstrucciones),500,500);
+  gtk_container_border_width(GTK_CONTAINER(ventanas->VentanaInstrucciones),5);
+  
+  pixbuf = gdk_pixbuf_new_from_file_at_scale("instrucciones.png", 500, 500, FALSE, NULL);
+  imagen = gtk_image_new_from_pixbuf(pixbuf);
+  boton= gtk_button_new();  
+  gtk_widget_show (imagen);
+
+  gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(Hide), ventanas);
+  gtk_signal_connect(GTK_OBJECT(ventanas->VentanaInstrucciones),"destroy",GTK_SIGNAL_FUNC(StopTheApp), ventanas);
+  
+  gtk_container_add(GTK_CONTAINER(ventanas->VentanaInstrucciones), boton);
+  gtk_container_add(GTK_CONTAINER(boton), hbox);
+  gtk_container_add(GTK_CONTAINER(hbox), GTK_WIDGET(imagen));
+  
+  gtk_widget_show_all(ventanas->VentanaInstrucciones); 
+}
