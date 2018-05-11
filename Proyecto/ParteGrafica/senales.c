@@ -31,11 +31,11 @@ void Pulsado(GtkWidget *Widget, gpointer info)
 void Abrir_menu_juego (GtkToolButton *toolbutton, gpointer info)
 {
   ptrWidgets Widgets=(ptrWidgets)info;
-  if(gtk_widget_get_window(Widgets->Nodo3->VenJ)==NULL)
+  if(gtk_widget_get_window(Widgets->SVentanas->VenJ)==NULL)
     VentanaJuego(Widgets);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Widgets->Nodo2->BotonInicia[0]),TRUE);
-  if(Widgets->Nodo->Activo==0)
-    gtk_widget_show_all(Widgets->Nodo3->VenJ);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Widgets->SOpciones->BotonInicia[0]),TRUE);
+  if(Widgets->STablero->Activo==0)
+    gtk_widget_show_all(Widgets->SVentanas->VenJ);
 }//Abrir_menu_juego
 
 /********************************************************
@@ -49,23 +49,23 @@ void MenuGuardar(GtkWidget *Widget, gpointer info)
 {
   ptrWidgets Widgets=(ptrWidgets)info;
   int l;
-  if(Widgets->Nodo->Activo!=0)
+  if(Widgets->STablero->Activo!=0)
     {
       GtkFileChooser *chooser;
       GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
       gint res;
       
-      Widgets->Nodo3->VenG= gtk_file_chooser_dialog_new ("Guardar Partida",
-							 GTK_WINDOW(Widgets->Nodo3->VenP),
+      Widgets->SVentanas->VenG= gtk_file_chooser_dialog_new ("Guardar Partida",
+							 GTK_WINDOW(Widgets->SVentanas->VenP),
 							 action,
 							 ("_Cancelar"),
 							 GTK_RESPONSE_CANCEL,
 							 ("_Guardar"),
 							 GTK_RESPONSE_ACCEPT,
 							 NULL);
-      chooser=GTK_FILE_CHOOSER (Widgets->Nodo3->VenG);
+      chooser=GTK_FILE_CHOOSER (Widgets->SVentanas->VenG);
       gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
-      res=gtk_dialog_run(GTK_DIALOG(Widgets->Nodo3->VenG));
+      res=gtk_dialog_run(GTK_DIALOG(Widgets->SVentanas->VenG));
       if (res==GTK_RESPONSE_ACCEPT)
 	{
 	  char *NombreArchivo;
@@ -75,13 +75,13 @@ void MenuGuardar(GtkWidget *Widget, gpointer info)
 	  if(NombreArchivo[l-1]!='e' || NombreArchivo[l-2]!='t' || NombreArchivo[l-3]!='p' || NombreArchivo[l-4]!='.')
 	    strcat(NombreArchivo,Extension);
 	  GuardarPartida(Widgets,NombreArchivo);
-	}//if
-      gtk_widget_destroy (Widgets->Nodo3->VenG);
-    }//if
+	}
+      gtk_widget_destroy (Widgets->SVentanas->VenG);
+    }
   else
     {
       GtkWidget *dialog;
-      dialog = gtk_message_dialog_new(GTK_WINDOW(Widgets->Nodo3->VenP),
+      dialog = gtk_message_dialog_new(GTK_WINDOW(Widgets->SVentanas->VenP),
 				      GTK_DIALOG_DESTROY_WITH_PARENT,
 				      GTK_MESSAGE_ERROR,
 				      GTK_BUTTONS_OK,
@@ -105,12 +105,12 @@ void MenuGuardar(GtkWidget *Widget, gpointer info)
 void MenuAbrir(GtkWidget *Widget, gpointer info)
 {
   ptrWidgets Widgets=(ptrWidgets)info;
-  if(Widgets->Nodo->Activo==0)
+  if(Widgets->STablero->Activo==0)
     {
       GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
       gint res;
-      Widgets->Nodo3->VenA=gtk_file_chooser_dialog_new ("Cargar Partida",
-							GTK_WINDOW(Widgets->Nodo3->VenP),
+      Widgets->SVentanas->VenA=gtk_file_chooser_dialog_new ("Cargar Partida",
+							GTK_WINDOW(Widgets->SVentanas->VenP),
 							action,
 							("_Cancelar"),
 							GTK_RESPONSE_CANCEL,
@@ -118,21 +118,21 @@ void MenuAbrir(GtkWidget *Widget, gpointer info)
 							GTK_RESPONSE_ACCEPT,
 							NULL);
       
-      res=gtk_dialog_run(GTK_DIALOG(Widgets->Nodo3->VenA));
+      res=gtk_dialog_run(GTK_DIALOG(Widgets->SVentanas->VenA));
       if(res==GTK_RESPONSE_ACCEPT)
 	{
 	  char *NombreArchivo;
 	  int l;
-	  GtkFileChooser *chooser = GTK_FILE_CHOOSER (Widgets->Nodo3->VenA);
+	  GtkFileChooser *chooser = GTK_FILE_CHOOSER (Widgets->SVentanas->VenA);
 	  NombreArchivo=gtk_file_chooser_get_filename(chooser);
-	  gtk_widget_destroy (Widgets->Nodo3->VenA);
+	  gtk_widget_destroy (Widgets->SVentanas->VenA);
 	  l=strlen(NombreArchivo);
 	  if(NombreArchivo[l-1]=='e' && NombreArchivo[l-2]=='t' && NombreArchivo[l-3]=='p' && NombreArchivo[l-4]=='.')
 	    CargarPartida(Widgets, NombreArchivo);
 	  else
 	    {
 	      GtkWidget *dialog;
-	      dialog = gtk_message_dialog_new(GTK_WINDOW(Widgets->Nodo3->VenP),
+	      dialog = gtk_message_dialog_new(GTK_WINDOW(Widgets->SVentanas->VenP),
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_MESSAGE_ERROR,
 					      GTK_BUTTONS_OK,
@@ -142,7 +142,7 @@ void MenuAbrir(GtkWidget *Widget, gpointer info)
 	      gtk_widget_destroy(dialog);
 	    }//else
 	}//if
-      gtk_widget_destroy (Widgets->Nodo3->VenA);
+      gtk_widget_destroy (Widgets->SVentanas->VenA);
     }//if
   else
     TerminarPartida(Widget,Widgets);
@@ -168,14 +168,14 @@ void Manual(GtkWidget *Widget, gpointer info)
   
 
   /* Create a Window. */
-  Widgets->Nodo3->VenAy= gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (Widgets->Nodo3->VenAy), "Manual del Usuario");
+  Widgets->SVentanas->VenAy= gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (Widgets->SVentanas->VenAy), "Manual del Usuario");
 
   /* Set a decent default size for the window. */
-  gtk_window_set_default_size (GTK_WINDOW (Widgets->Nodo3->VenAy), 200, 400);
-  gtk_window_set_position(GTK_WINDOW(Widgets->Nodo3->VenAy),GTK_WIN_POS_CENTER);
+  gtk_window_set_default_size (GTK_WINDOW (Widgets->SVentanas->VenAy), 200, 400);
+  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenAy),GTK_WIN_POS_CENTER);
   vbox = gtk_vbox_new (FALSE, 2);
-  gtk_container_add (GTK_CONTAINER (Widgets->Nodo3->VenAy), vbox);
+  gtk_container_add (GTK_CONTAINER (Widgets->SVentanas->VenAy), vbox);
 
   /* Create a multiline text widget. */
   text_view = gtk_text_view_new ();
@@ -191,9 +191,9 @@ void Manual(GtkWidget *Widget, gpointer info)
   gtk_box_pack_start (GTK_BOX (vbox), button, 0, 0, 0);
   g_signal_connect (G_OBJECT (button), "clicked", 
                     G_CALLBACK (on_button_clicked),
-                    Widgets->Nodo3->VenAy);
+                    Widgets->SVentanas->VenAy);
   
-  gtk_widget_show_all(Widgets->Nodo3->VenAy);
+  gtk_widget_show_all(Widgets->SVentanas->VenAy);
 
 
 }//manual
@@ -226,11 +226,11 @@ void TerminarPartida(GtkWidget *Widget, gpointer info)
 {
   ptrWidgets Widgets=(ptrWidgets)info;
   int i,j;
-  if(Widgets->Nodo->Activo!=0)
+  if(Widgets->STablero->Activo!=0)
     {
       GtkWidget *Dialog2;
       int Desicion;
-      Dialog2=gtk_message_dialog_new(GTK_WINDOW(Widgets->Nodo3->VenP),
+      Dialog2=gtk_message_dialog_new(GTK_WINDOW(Widgets->SVentanas->VenP),
 				     GTK_DIALOG_DESTROY_WITH_PARENT,
 				     GTK_MESSAGE_QUESTION,
 				     GTK_BUTTONS_YES_NO,
@@ -243,23 +243,23 @@ void TerminarPartida(GtkWidget *Widget, gpointer info)
 	MenuGuardar(Dialog2,Widgets);
       if(Desicion==GTK_RESPONSE_NO || Desicion==GTK_RESPONSE_YES)
         {
-	  Widgets->Nodo->Activo=0;
-	  Widgets->Nodo->Turno=0;
+	  Widgets->STablero->Activo=0;
+	  Widgets->STablero->Turno=0;
 	  for(i=0;i<20;i++)
             {
 	      for(j=0;j<20;j++)
                 {
-		  if(Widgets->Nodo->Estados[i][j]!=0)
+		  if(Widgets->STablero->Estados[i][j]!=0)
                     {
 		      gtk_image_set_from_file(GTK_IMAGE(Widgets->Nodo->Im[i][j]),"Archivos/0.png");
-		      Widgets->Nodo->Estados[i][j]=0;
+		      Widgets->STablero->Estados[i][j]=0;
                     }//if
                 }//for
             }//for
-	  gtk_label_set_text(GTK_LABEL(Widgets->Nodo->EJ[0]),"Jugador1");
-	  gtk_label_set_text(GTK_LABEL(Widgets->Nodo->EJ[1]),"Jugador2");
-      gtk_label_set_text(GTK_LABEL(Widgets->Nodo->BComidas),"00");
-      gtk_label_set_text(GTK_LABEL(Widgets->Nodo->NComidas),"00");
+	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]),"Jugador1");
+	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[1]),"Jugador2");
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->BComidas),"00");
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->NComidas),"00");
 	  if((strcasecmp(gtk_widget_get_name(Widget),"Abrir"))==0)
 	    MenuAbrir(Dialog2,Widgets);
         }//if
@@ -297,7 +297,7 @@ void IniciarPartida(GtkWidget *Widget, gpointer info)
 void Esconder(GtkWidget *Widget, gpointer info)
 {
   ptrWidgets Widgets=(ptrWidgets)info;
-  gtk_widget_hide(Widgets->Nodo3->VenJ);
+  gtk_widget_hide(Widgets->SVentanas->VenJ);
 }//esconder
 
 
@@ -314,17 +314,17 @@ void Acerca_de(GtkWidget *Widget, gpointer info)
   GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file("Archivos/Logo.png", NULL);
   const gchar *Nombres[100]={"Mariana Martinez Kobeh","Elena Ginebra","Karina Almazán"};
   Nodo3->VenAd=gtk_about_dialog_new();
-  gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(Nodo3->VenAd), "PENTE");
-  gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(Nodo3->VenAd), "1.0"); 
-  gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(Nodo3->VenAd), Nombres);
-  gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(Nodo3->VenAd),"(c) Universidad IberoAmericana");
-  gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(Nodo3->VenAd), 
+  gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(SVentanas->VenAd), "PENTE");
+  gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(SVentanas->VenAd), "1.0"); 
+  gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(SVentanas->VenAd), Nombres);
+  gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(SVentanas->VenAd),"(c) Universidad IberoAmericana");
+  gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(SVentanas->VenAd), 
 				"PENTE es la aplicacion que te permite jugar el juego de manera electronica");
-  gtk_about_dialog_set_logo(GTK_ABOUT_DIALOG(Nodo3->VenAd), pixbuf);
+  gtk_about_dialog_set_logo(GTK_ABOUT_DIALOG(SVentanas->VenAd), pixbuf);
   g_object_unref(pixbuf), pixbuf = NULL;
-  gtk_window_set_position(GTK_WINDOW(Nodo3->VenAd),GTK_WIN_POS_CENTER);
-  gtk_dialog_run(GTK_DIALOG (Nodo3->VenAd));
-  gtk_widget_destroy(Nodo3->VenAd);
+  gtk_window_set_position(GTK_WINDOW(SVentanas->VenAd),GTK_WIN_POS_CENTER);
+  gtk_dialog_run(GTK_DIALOG (SVentanas->VenAd));
+  gtk_widget_destroy(SVentanas->VenAd);
 }//Acerca_de
 
 /********************************************************
@@ -338,14 +338,14 @@ void CerrarJuego(GtkWidget *Widget, gpointer info)
 {
   ptrWidgets Widgets=(ptrWidgets)info;
   gboolean Desicion;
-  if(Widgets->Nodo->Activo!=0)
+  if(Widgets->STablero->Activo!=0)
     {
       Desicion=DialogoCerrar(Widgets);
       if(Desicion!=-99)
-	gtk_widget_destroy(Widgets->Nodo3->VenP);
+	gtk_widget_destroy(Widgets->SVentanas->VenP);
     }//if
   else
-    gtk_widget_destroy(Widgets->Nodo3->VenP);
+    gtk_widget_destroy(Widgets->SVentanas->VenP);
 }//CerrarJuego
 
 /********************************************************
@@ -359,7 +359,7 @@ gboolean CerrarJuego1(GtkWidget *Widget, GdkEvent *event, gpointer info)
 {
   ptrWidgets Widgets=(ptrWidgets)info;
   gboolean Desicion;
-  if(Widgets->Nodo->Activo!=0)
+  if(Widgets->STablero->Activo!=0)
     {
       Desicion=DialogoCerrar(Widgets);
       if(Desicion==-99)
@@ -379,11 +379,11 @@ gboolean CerrarJuego1(GtkWidget *Widget, GdkEvent *event, gpointer info)
 void CerrarJuego2(GtkWidget *Widget, gpointer info)
 {
   ptrWidgets Widgets=(ptrWidgets)info;
-  if(Widgets->Nodo->Activo!=0)
-    fclose(Widgets->Nodo->Temporal);
-  free(Widgets->Nodo);
-  free(Widgets->Nodo2);
-  free(Widgets->Nodo3);
+  if(Widgets->sTablero->Activo!=0)
+    fclose(Widgets->STablero->Temporal);
+  free(Widgets->Stablero);
+  free(Widgets->SOpciones);
+  free(Widgets->SVentanas);
   free(Widgets);
   gtk_main_quit();
 }//CerrarJuego2
