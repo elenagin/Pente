@@ -68,18 +68,18 @@ gboolean Juez(GtkWidget *Widget, ptrWidgets Widgets)
 gboolean DialogoCerrar(ptrWidgets Widgets)
 {
   gboolean Desicion;
-  Widgets->Nodo3->Des1=gtk_message_dialog_new(GTK_WINDOW(Widgets->Nodo3->VenP),
+  Widgets->SVentanas->Des1=gtk_message_dialog_new(GTK_WINDOW(Widgets->Nodo3->VenP),
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_MESSAGE_QUESTION,
 					      GTK_BUTTONS_YES_NO,
 					      "¿Desea guardar la partida?");
-  gtk_window_set_position(GTK_WINDOW(Widgets->Nodo3->Des1),GTK_WIN_POS_CENTER);
-  gtk_window_set_title(GTK_WINDOW(Widgets->Nodo3->Des1), "Partida en marcha");
-  Desicion=gtk_dialog_run(GTK_DIALOG(Widgets->Nodo3->Des1));
-  gtk_widget_destroy(Widgets->Nodo3->Des1);
+  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->Des1),GTK_WIN_POS_CENTER);
+  gtk_window_set_title(GTK_WINDOW(Widgets->SVentanas->Des1), "Partida en marcha");
+  Desicion=gtk_dialog_run(GTK_DIALOG(Widgets->SVentanas->Des1));
+  gtk_widget_destroy(Widgets->SVentanas->Des1);
   if(Desicion==GTK_RESPONSE_YES)
     {
-      MenuGuardar(Widgets->Nodo3->VenP,Widgets);
+      MenuGuardar(Widgets->SVentanas->VenP,Widgets);
       Desicion=TRUE;
     }//if
   if(Desicion==GTK_RESPONSE_NO)
@@ -103,18 +103,18 @@ gboolean Ganador(ptrWidgets Widgets, int a)
   const gchar *Nombre, *Tiempo;
   gboolean Desicion;
   if (a==1)
-    Nombre=gtk_label_get_text(GTK_LABEL(Widgets->Nodo->EJ[0]));
+    Nombre=gtk_label_get_text(GTK_LABEL(Widgets->STablero->EJ[0]));
   else
-    Nombre=gtk_label_get_text(GTK_LABEL(Widgets->Nodo->EJ[1]));
-  Widgets->Nodo3->Des2=gtk_message_dialog_new(GTK_WINDOW(Widgets->Nodo3->VenP),
+    Nombre=gtk_label_get_text(GTK_LABEL(Widgets->STablero->EJ[1]));
+  Widgets->SVentanas->Des2=gtk_message_dialog_new(GTK_WINDOW(Widgets->SVentanas->VenP),
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_MESSAGE_QUESTION,
 					      GTK_BUTTONS_YES_NO,
 					      "Ganador: %s\n¿Desea jugar otra vez?",Nombre);
-  gtk_window_set_position(GTK_WINDOW(Widgets->Nodo3->Des2),GTK_WIN_POS_CENTER);
-  gtk_window_set_title(GTK_WINDOW(Widgets->Nodo3->Des2), "Ganador");
-  Desicion=gtk_dialog_run(GTK_DIALOG(Widgets->Nodo3->Des2));
-  gtk_widget_destroy(Widgets->Nodo3->Des2);
+  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->Des2),GTK_WIN_POS_CENTER);
+  gtk_window_set_title(GTK_WINDOW(Widgets->SVentanas->Des2), "Ganador");
+  Desicion=gtk_dialog_run(GTK_DIALOG(Widgets->SVentanas->Des2));
+  gtk_widget_destroy(Widgets->SVentanas->Des2);
   if(Desicion==GTK_RESPONSE_YES)
     Desicion=TRUE;
   if(Desicion==GTK_RESPONSE_NO || Desicion==GTK_RESPONSE_DELETE_EVENT)
