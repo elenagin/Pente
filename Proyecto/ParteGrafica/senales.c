@@ -162,21 +162,22 @@ void Manual(GtkWidget *Widget,gpointer data)
 ptrWidgets Widgets=(ptrWidgets)data;
   GdkPixbuf *pixbuf;
 GtkWidget *picture;
+   GtkWidget *imagen, *boton, *vbox;
 
   /* Create a Window. */
-  Widgets->SVentanas->VenAy= gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (Widgets->SVentanas->VenAy), "Instrucciones");
+  Widgets->SVentanas->VenAy = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VenAy), "Ayuda");
+  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenAy), GTK_WIN_POS_CENTER);
+  gtk_window_set_default_size(GTK_WINDOW(Widgets->SVentanas->VenAy),500,500);
+  gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VenAy), FALSE);
+  gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->VenAy),5);
 
-  /* Set a decent default size for the window. */
-  gtk_window_set_default_size (GTK_WINDOW (Widgets->SVentanas->VenAy), 200, 400);
-  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenAy),GTK_WIN_POS_CENTER);
-     
-  /* Obtaining the buffer associated with the widget. */
-  pixbuf = gdk_pixbuf_new_from_file("Archivos/instrucciones.png", NULL);
- picture = gtk_image_new_from_pixbuf(pixbuf);
-  gtk_container_add (GTK_CONTAINER (Widgets->SVentanas->VenAy), picture);
+  pixbuf = gdk_pixbuf_new_from_file_at_scale("Archivos/instrucciones.png", 500, 500, FALSE, NULL);
+  imagen = gtk_image_new_from_pixbuf(pixbuf); 
+  gtk_widget_show (imagen);
+
+  gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VenAy), imagen);  
   gtk_widget_show_all(Widgets->SVentanas->VenAy);
-
 }//manual
 
 
