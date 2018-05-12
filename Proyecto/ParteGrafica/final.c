@@ -133,7 +133,7 @@ void VentanaPrincipal(ptrWidgets Widgets)
 
   
   /*Definimos la jerarquia para meter los iconos en la TOOLBAR*/
-  gtk_toolbar_set_style(GTK_TOOLBAR(Tool), GTK_TOOLBAR_ICONS);
+  gtk_toolbar_set_style(GTK_TOOLBAR(Tool), GTK_TOOLBAR_BOTH);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), TJ, -1);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), TG, -1);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), TA, -1);
