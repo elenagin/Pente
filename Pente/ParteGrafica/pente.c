@@ -1,9 +1,23 @@
+/*****************************************************************
+ *
+ * Archivo:	pente.c
+ * Autores:
+ * Descripcion: Codigo Fuente para implementar el programa
+ *		        de Pente en base a funciones de GTK+
+ *              desarrollando un ambiente grafico para que los
+ *              usuarios puedan jugar
+ * Uso: Iniciar el programa.
+ * Fecha:
+ *
+ ****************************************************************/
+
 /*Archivos de Inclusion*/
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include "tipos.h"
 #include "senales.h"
 #include "funciones.h"
+#include "ventanas.h"
 
 /*Funcion principal*/
 int main(int argc, char *argv[])

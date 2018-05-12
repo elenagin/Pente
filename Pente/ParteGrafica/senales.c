@@ -3,7 +3,7 @@
 #include <string.h>
 #include "tipos.h"
 #include "funciones.h"
-#include "final.h"
+#include "ventanas.h"
 #include "senales.h"
 
 /********************************************************
@@ -293,7 +293,7 @@ void Esconder(GtkWidget *Widget, gpointer data)
 void Acerca_de(GtkWidget *Widget, gpointer data)
 {
   ptrVentanas SVentanas=(ptrVentanas)data;
-  GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file("Archivos/Logo.png", NULL);
+  GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file("Archivos/logo_peque.png", NULL);
   const gchar *Nombres[100]={"Mariana Martinez Kobeh","Elena Ginebra","Karina Almazán"};
   SVentanas->VenAd=gtk_about_dialog_new();
   gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(SVentanas->VenAd), "PENTE");
