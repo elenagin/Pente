@@ -100,7 +100,7 @@ gboolean DialogoCerrar(ptrWidgets Widgets)
  ********************************************************/
 gboolean Ganador(ptrWidgets Widgets, int a)
 {
-  const gchar *Nombre, *Tiempo;
+  const gchar *Nombre;
   gboolean Desicion;
   if (a==1)
     Nombre=gtk_label_get_text(GTK_LABEL(Widgets->STablero->EJ[0]));
