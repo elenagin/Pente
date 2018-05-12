@@ -23,6 +23,7 @@
 void VentanaPrincipal(ptrWidgets Widgets);
 void VentanaJuego(ptrWidgets Widgets);
 void VentanaBienvenida(ptrWidgets Widgets);
+void VentanaInstrucciones(ptrWidgets Widgets);
 
 /*Funcion principal*/
 int main(int argc, char *argv[])
@@ -62,7 +63,7 @@ void VentanaPrincipal(ptrWidgets Widgets)
   GtkToolItem *TJ, *TG, *TA, *Sep1, *TAy, *TAd, *Sep2, *TS;
   GtkWidget *Tabla;
   GdkColor Tablero={0,0xF200,0xEB00,0xD500};/*Declara un color*/
-  GtkWidget *CHPartida[3], *Im1, *Im2;
+  GtkWidget *CHPartida[3], *IVenB, *Im2;
 
   /*2. Creamos widgets*/
   //Cajas
@@ -176,8 +177,8 @@ void VentanaPrincipal(ptrWidgets Widgets)
   gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[0]);//caja horizontal en caja vertical
   Widgets->STablero->RComidas=gtk_label_new("00");//creacion de label que indicara las jugadas o comidas
   gtk_box_pack_start_defaults (GTK_BOX(CHPartida[0]),Widgets->STablero->RComidas);//incluimos en la caja vertical el label
-  Im1=gtk_image_new_from_file("Archivos/1.png");//creamos imagen
-  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[0]),Im1);//agregamos imagen en la caja horizontal
+  IVenB=gtk_image_new_from_file("Archivos/1.png");//creamos imagen
+  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[0]),IVenB);//agregamos imagen en la caja horizontal
   Widgets->STablero->EJ[0]=gtk_label_new("Jugador1");//creamos label
   gtk_box_pack_start_defaults (GTK_BOX(CHPartida[0]),Widgets->STablero->EJ[0]);//agregamos label en caja horizontal
 
@@ -273,13 +274,45 @@ void VentanaJuego(ptrWidgets Widgets)
  ****************************************************/
 void VentanaBienvenida(ptrWidgets Widgets)
 {
-  Widgets->SVentanas->M1=gtk_message_dialog_new(GTK_WINDOW(Widgets->SVentanas->VenP),
-					    GTK_DIALOG_DESTROY_WITH_PARENT,
-					    GTK_MESSAGE_OTHER,
-					    GTK_BUTTONS_OK,
-					    "Bienvenido jugador:\nEste programa fue elaborado por:\nMariana Martinez Kobeh\nElena Ginebra\nKarina Almazán");//nuevo mensaje de Dialogo, en este mismo esta ya incluido en el mensaje de dialogo los botones
-  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->M1),GTK_WIN_POS_CENTER);//establecer posicion al centro
-  gtk_window_set_title(GTK_WINDOW(Widgets->SVentanas->M1), "Bienvenido");//nombre de la ventana
-  gtk_dialog_run(GTK_DIALOG(Widgets->SVentanas->M1));//correr el cuadro de dialogo
-  gtk_widget_destroy(Widgets->SVentanas->M1);//destruir cuadro de dialogo
+  // GtkWidget *button;
+  GdkPixbuf *pixbuf;
+GtkWidget *picture;
+
+//button= gtk_button_new();
+  /* Create a Window. */
+  Widgets->SVentanas->VenB= gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (Widgets->SVentanas->VenB), "Bienvenido");
+
+  /* Set a decent default size for the window. */
+  gtk_window_set_default_size (GTK_WINDOW (Widgets->SVentanas->VenB), 200, 400);
+  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenB),GTK_WIN_POS_CENTER);
+     
+  /* Obtaining the buffer associated with the widget. */
+  pixbuf = gdk_pixbuf_new_from_file("Archivos/LogoB.png", NULL);
+ picture = gtk_image_new_from_pixbuf(pixbuf);
+  //gtk_container_add (GTK_CONTAINER (button), picture);
+gtk_container_add (GTK_CONTAINER (Widgets->SVentanas->VenB), picture);
+// g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(VentanaInstrucciones),Widgets);
+  gtk_widget_show_all(Widgets->SVentanas->VenB);
+ VentanaInstrucciones(Widgets);
+}//VentanaBienvenida
+
+void VentanaInstrucciones(ptrWidgets Widgets)
+{
+   
+  GdkPixbuf *pixbuf;
+GtkWidget *picture;
+  /* Create a Window. */
+  Widgets->SVentanas->VenI= gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (Widgets->SVentanas->VenI), "Instrucciones");
+
+  /* Set a decent default size for the window. */
+  gtk_window_set_default_size (GTK_WINDOW (Widgets->SVentanas->VenI), 200, 400);
+  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenI),GTK_WIN_POS_CENTER);
+     
+  /* Obtaining the buffer associated with the widget. */
+  pixbuf = gdk_pixbuf_new_from_file("Archivos/instrucciones.png", NULL);
+ picture = gtk_image_new_from_pixbuf(pixbuf);
+  gtk_container_add (GTK_CONTAINER (Widgets->SVentanas->VenI), picture);
+  gtk_widget_show_all(Widgets->SVentanas->VenI);
 }//VentanaBienvenida
