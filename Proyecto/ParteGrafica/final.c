@@ -76,6 +76,7 @@ void VentanaPrincipal(ptrWidgets Widgets)
   gtk_window_set_resizable(GTK_WINDOW(Widgets->Nodo3->VenP),FALSE);//fijamos atributo de la ventana 
   gtk_window_set_position(GTK_WINDOW(Widgets->Nodo3->VenP),GTK_WIN_POS_CENTER);//fijamos posicion de la ventana
   //Registramos la llamada a funciones con g_signal_connect, usaremos la funcion salir
+  gtk_window_set_title(GTK_WINDOW (Widgets->Nodo3->VenP), "Pente");
   g_signal_connect(Widgets->Nodo3->VenP,"delete_event",G_CALLBACK(CerrarJuego1), Widgets);
   g_signal_connect(Widgets->Nodo3->VenP,"destroy",G_CALLBACK(CerrarJuego2), Widgets);
   gtk_container_add(GTK_CONTAINER(Widgets->Nodo3->VenP),CV);//definimos jerarquia, quien contiene a quien
