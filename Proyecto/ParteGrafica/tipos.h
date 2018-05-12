@@ -1,21 +1,9 @@
-/*******************************************
-*  @file tipos.h                           *
-*                                          *
-*  @brief Este archivo incluye todas las   *
-*         estructuras a utilizar en la     *
-*         desarrollo de la parte grafica   *
-*         de este proyecto.                *
-*  @date 24/04/2018
-*******************************************/
-
-/*******************************************
-*   Estructura en donde se inluyen todos   *
-*   los elementos a ocupar en las ventanas *
 *******************************************/
 struct def_Ventanas
 {
   GtkWidget *VenP;//Ventana Principal
-  GtkWidget *M1;//Mensaje 1
+  GtkWidget *VenB;//Ventana Bienvenida
+GtkWidget *VenI;//Ventana instrucciones
   GtkWidget *M2;//Mensaje 2
   GtkWidget *M3;//Mensaje 3
   GtkWidget *Des1;//Dialogo 1
