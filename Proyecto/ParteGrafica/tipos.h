@@ -1,3 +1,16 @@
+/*******************************************
+*  @file tipos.h                           *
+*                                          *
+*  @brief Este archivo incluye todas las   *
+*         estructuras a utilizar en la     *
+*         desarrollo de la parte grafica   *
+*         de este proyecto.                *
+*  @date 24/04/2018
+*******************************************/
+
+/*******************************************
+*   Estructura en donde se inluyen todos   *
+*   los elementos a ocupar en las ventanas *
 *******************************************/
 struct def_Ventanas
 {
