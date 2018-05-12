@@ -20,10 +20,10 @@
 #include "funciones.h"
 
 /*Funciones Prototipo*/
-void VentanaPrincipal(ptrWidgets Widgets);
+void VentanaPrincipal(GtkWidget *widget, gpointer data);
 void VentanaJuego(ptrWidgets Widgets);
 void VentanaBienvenida(ptrWidgets Widgets);
-void VentanaInstrucciones(ptrWidgets Widgets);
+void VentanaInstrucciones(GtkWidget *widget, gpointer data);
 
 /*Funcion principal*/
 int main(int argc, char *argv[])
@@ -35,10 +35,8 @@ int main(int argc, char *argv[])
   Widgets->SVentanas=(ptrVentanas)malloc(sizeof(tVentanas));
   Widgets->STablero=(ptrTablero)malloc(sizeof(tTablero));
   Widgets->SOpciones=(ptrOpciones)malloc(sizeof(tOpciones));//creacion de widgets
-  VentanaPrincipal(Widgets);//Se crea la ventana principal
   VentanaJuego(Widgets);//Se crea la ventana de nueva partida
   VentanaBienvenida(Widgets);//Se crea la ventana de presentacion y se espera a que se le de aceptar
-  gtk_widget_show_all(Widgets->SVentanas->VenP);//Mostramos todos los widgests incluidos en la ventana
   gtk_main();/*funcion inicio iterada*/
   
 }//main
@@ -52,7 +50,7 @@ int main(int argc, char *argv[])
  *  Ventana en Pantalla                             *
  ****************************************************/ 
 
-void VentanaPrincipal(ptrWidgets Widgets)
+void VentanaPrincipal(GtkWidget *widget, gpointer data)
 {
   /*Variables a utilizar*/
   GtkWidget *CV, *CH,*CPartida;
@@ -64,7 +62,9 @@ void VentanaPrincipal(ptrWidgets Widgets)
   GtkWidget *Tabla;
   GdkColor Tablero={0,0xF200,0xEB00,0xD500};/*Declara un color*/
   GtkWidget *CHPartida[3], *IVenB, *Im2;
-
+  ptrWidgets Widgets=(ptrWidgets)data;
+  gtk_widget_hide(Widgets->SVentanas->VenI);
+  
   /*2. Creamos widgets*/
   //Cajas
   CV=gtk_vbox_new(FALSE,0);//Creamos caja vertical
@@ -146,7 +146,7 @@ void VentanaPrincipal(ptrWidgets Widgets)
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), TS, -1);
   gtk_box_pack_start (GTK_BOX(CV),Tool,FALSE,TRUE,0);//incluimos la toolbar en la caja vertical
   
-  //Tablero de juego e inizializacion de datos
+  //Tablero de juego e inicializacion de datos
   gtk_box_pack_start_defaults (GTK_BOX(CV),CH);//Caja de tablero y cuadro
   Widgets->STablero->Activo=0;//Significa si hay una partida en juego
   Widgets->STablero->Turno=0;//Significa el turno correspondiente
@@ -193,7 +193,7 @@ void VentanaPrincipal(ptrWidgets Widgets)
 
   CHPartida[2]=gtk_fixed_new();//centramos el tiempo
   gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[2]);//incluimos la caja de tiempo en la caja de partida
-  
+  gtk_widget_show_all(Widgets->SVentanas->VenP);  
 }//VentanaPrincipal
 
 
@@ -274,45 +274,60 @@ void VentanaJuego(ptrWidgets Widgets)
  ****************************************************/
 void VentanaBienvenida(ptrWidgets Widgets)
 {
-  // GtkWidget *button;
-  GdkPixbuf *pixbuf;
-GtkWidget *picture;
+  GtkWidget *imagen, *boton, *vbox;
+  GdkPixbuf *pixbuf; 
 
-//button= gtk_button_new();
-  /* Create a Window. */
-  Widgets->SVentanas->VenB= gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (Widgets->SVentanas->VenB), "Bienvenido");
+  vbox = gtk_vbox_new(TRUE,5);
+  Widgets->SVentanas->VenB = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VenB), "Pente");
+  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenB), GTK_WIN_POS_CENTER);
+  gtk_window_set_default_size(GTK_WINDOW(Widgets->SVentanas->VenB),500,500);
+  gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VenB), FALSE);
+  gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->VenB),5);
 
-  /* Set a decent default size for the window. */
-  gtk_window_set_default_size (GTK_WINDOW (Widgets->SVentanas->VenB), 200, 400);
-  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenB),GTK_WIN_POS_CENTER);
-     
-  /* Obtaining the buffer associated with the widget. */
-  pixbuf = gdk_pixbuf_new_from_file("Archivos/LogoB.png", NULL);
- picture = gtk_image_new_from_pixbuf(pixbuf);
-  //gtk_container_add (GTK_CONTAINER (button), picture);
-gtk_container_add (GTK_CONTAINER (Widgets->SVentanas->VenB), picture);
-// g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(VentanaInstrucciones),Widgets);
+  pixbuf = gdk_pixbuf_new_from_file_at_scale("Archivos/logo.png", 500, 500, FALSE, NULL);
+  imagen = gtk_image_new_from_pixbuf(pixbuf);
+  boton= gtk_button_new();
+  
+  gtk_widget_show (imagen);
+
+  gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(VentanaInstrucciones), Widgets);
+  gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->VenB),"destroy",GTK_SIGNAL_FUNC(CerrarJuego2), Widgets);
+  gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VenB), boton);
+  gtk_container_add(GTK_CONTAINER(boton), vbox);
+  gtk_container_add(GTK_CONTAINER(vbox), GTK_WIDGET(imagen));
+  
   gtk_widget_show_all(Widgets->SVentanas->VenB);
- VentanaInstrucciones(Widgets);
+
 }//VentanaBienvenida
 
-void VentanaInstrucciones(ptrWidgets Widgets)
+void VentanaInstrucciones(GtkWidget *widget, gpointer data)
 {
-   
-  GdkPixbuf *pixbuf;
-GtkWidget *picture;
-  /* Create a Window. */
-  Widgets->SVentanas->VenI= gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (Widgets->SVentanas->VenI), "Instrucciones");
+  GtkWidget *imagen, *boton, *vbox;
+  GdkPixbuf *pixbuf; 
+  ptrWidgets Widgets=(ptrWidgets)data;
+  
+  gtk_widget_hide(Widgets->SVentanas->VenB);
+  vbox = gtk_vbox_new(TRUE,5);
 
-  /* Set a decent default size for the window. */
-  gtk_window_set_default_size (GTK_WINDOW (Widgets->SVentanas->VenI), 200, 400);
-  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenI),GTK_WIN_POS_CENTER);
-     
-  /* Obtaining the buffer associated with the widget. */
-  pixbuf = gdk_pixbuf_new_from_file("Archivos/instrucciones.png", NULL);
- picture = gtk_image_new_from_pixbuf(pixbuf);
-  gtk_container_add (GTK_CONTAINER (Widgets->SVentanas->VenI), picture);
+  Widgets->SVentanas->VenI = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VenI), "Pente");
+  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenI), GTK_WIN_POS_CENTER);
+  gtk_window_set_default_size(GTK_WINDOW(Widgets->SVentanas->VenI),500,500);
+  gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VenI), FALSE);
+  gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->VenI),5);
+
+  pixbuf = gdk_pixbuf_new_from_file_at_scale("Archivos/instrucciones.png", 500, 500, FALSE, NULL);
+  imagen = gtk_image_new_from_pixbuf(pixbuf);
+  boton= gtk_button_new();
+  
+  gtk_widget_show (imagen);
+
+  gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(VentanaPrincipal), Widgets);
+  gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->VenI),"destroy",GTK_SIGNAL_FUNC(CerrarJuego2), Widgets);
+  gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VenI), boton);
+  gtk_container_add(GTK_CONTAINER(boton), vbox);
+  gtk_container_add(GTK_CONTAINER(vbox), GTK_WIDGET(imagen));
+  
   gtk_widget_show_all(Widgets->SVentanas->VenI);
-}//VentanaBienvenida
+}//VentanaInstrucciones
