@@ -157,44 +157,25 @@ void MenuAbrir(GtkWidget *Widget, gpointer data)
  *  Retorno:                                            *
  *  ventana del manual de juego                         *
  ********************************************************/
-void Manual(GtkWidget *Widget, gpointer data)
+void Manual(GtkWidget *Widget,gpointer data)  
 {
-  ptrWidgets Widgets=(ptrWidgets)data;  
-
-  GtkWidget *vbox;
-  GtkWidget *text_view;
-  GtkWidget *button;
-  GtkTextBuffer *buffer;
-  
+ptrWidgets Widgets=(ptrWidgets)data;
+  GdkPixbuf *pixbuf;
+GtkWidget *picture;
 
   /* Create a Window. */
   Widgets->SVentanas->VenAy= gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (Widgets->SVentanas->VenAy), "Manual del Usuario");
+  gtk_window_set_title (GTK_WINDOW (Widgets->SVentanas->VenAy), "Instrucciones");
 
   /* Set a decent default size for the window. */
   gtk_window_set_default_size (GTK_WINDOW (Widgets->SVentanas->VenAy), 200, 400);
   gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenAy),GTK_WIN_POS_CENTER);
-  vbox = gtk_vbox_new (FALSE, 2);
-  gtk_container_add (GTK_CONTAINER (Widgets->SVentanas->VenAy), vbox);
-
-  /* Create a multiline text widget. */
-  text_view = gtk_text_view_new ();
-  gtk_box_pack_start (GTK_BOX (vbox), text_view, 1, 1, 0);
-
+     
   /* Obtaining the buffer associated with the widget. */
-  buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (text_view));
-  /* Set the default buffer text. */ 
-  gtk_text_buffer_set_text (buffer, "Estimado usuario,usted esta jugando Pente 1.0\n, para que pueda tener una mejor experiencia\n hemos incluido lo siguiente:\n El juego tiene las siguientes opiones:\n 1. Jugar: Tienes acceso en el Toolbar y en la barra de Herramientas\n,cuando presionas este boton se abren las opciones para que puedas empezar\n a jugar sin ningun problema\n 2.Abrir: Para abrir haz click en la barra de Menu, en la opcion Juego\n, en el item abrir, selecciona el archivo que deseas abrir,\ntambien puedes tener acceso en la toolbar en el icono del folder\n3. Guardar:Tienes acceso en el toolbar y en la barra de Herramientas\ncuando presionas este boton se abren las opciones a guardar\n es decir, en donde y con que nombre tambien puedes tener acceso en la toolbar\n4. Acerca de: Si quieres saber como los creditos del juego esta es la opcion\n 5.Ayuda: Se encuentra la opcion en la barra de Herramientas y en el toolbar\n cuando presionas estas opciones se despliega esta pantalla.\n \n Reglas del Juego:\n Para jugar Pente necesitas saber las reglas del juego\n No esta permitido hacer comidas automaticas\n Se pueden hacer comidas multiples si es tu turno\n Para comer necesitas atrapar las fichas por los costados, uno de cada lado\n Ganas si... \n Haces una inea recta de 5 fichas, sin importar sentido\n Hacer 4 lineas rectas de 4 fichas cada una, sin importar sentido\n Comer 12 fichas del oponente\n Estas son las reglas,¡Disfruta el Juego! ", -1);
-  gtk_text_view_set_editable(GTK_TEXT_VIEW(text_view),FALSE);
-  /* Create a close button. */
-  button = gtk_button_new_with_label ("Close");
-  gtk_box_pack_start (GTK_BOX (vbox), button, 0, 0, 0);
-  g_signal_connect (G_OBJECT (button), "clicked", 
-                    G_CALLBACK (on_button_clicked),
-                    Widgets->SVentanas->VenAy);
-  
+  pixbuf = gdk_pixbuf_new_from_file("Archivos/instrucciones.png", NULL);
+ picture = gtk_image_new_from_pixbuf(pixbuf);
+  gtk_container_add (GTK_CONTAINER (Widgets->SVentanas->VenAy), picture);
   gtk_widget_show_all(Widgets->SVentanas->VenAy);
-
 
 }//manual
 
