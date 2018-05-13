@@ -1,6 +1,6 @@
 /*****************************************************************
  *
- * Archivo:	final.c
+ * Archivo:	ventanas.c
  * Autores:
  * Descripcion: Codigo Fuente para implementar el programa
  *		        de Pente en base a funciones de GTK+
@@ -44,7 +44,6 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
   ptrWidgets Widgets=(ptrWidgets)data;
   gtk_widget_hide(Widgets->SVentanas->VenI);
   
-  /*2. Creamos widgets*/
   //Cajas
   CV=gtk_vbox_new(FALSE,0);//Creamos caja vertical
   CH=gtk_hbox_new(FALSE,0);//Creamos caja Horizontal
@@ -222,13 +221,13 @@ void VentanaJuego(ptrWidgets Widgets)
   gtk_box_pack_start_defaults (GTK_BOX(Widgets->SOpciones->CHJ[1]),Widgets->SOpciones->Entry[1]);//agregamos entry a caja horizontal
   
   //Orden de tiro
-  EtiquetasJ[3]=gtk_label_new("¿Quien empieza el juego?");//nuevo label
-  Widgets->SOpciones->BotonInicia[0]=gtk_radio_button_new_with_label(NULL,"Jugador 1");//nuevo boton radio
-  Widgets->SOpciones->Grupo=gtk_radio_button_get_group(GTK_RADIO_BUTTON(Widgets->SOpciones->BotonInicia[0]));//definimos orden de boton
-  Widgets->SOpciones->BotonInicia[1]=gtk_radio_button_new_with_label(Widgets->SOpciones->Grupo,"Jugador 2");//agregamos nombre a boton
+  EtiquetasJ[3]=gtk_label_new("Nota: El jugador 1 siempre\nes quien empieza el juego.");//nuevo label
+  //Widgets->SOpciones->BotonInicia[0]=gtk_radio_button_new_with_label(NULL,"Jugador 1");//nuevo boton radio
+  //Widgets->SOpciones->Grupo=gtk_radio_button_get_group(GTK_RADIO_BUTTON(Widgets->SOpciones->BotonInicia[0]));//definimos orden de boton
+  //Widgets->SOpciones->BotonInicia[1]=gtk_radio_button_new_with_label(Widgets->SOpciones->Grupo,"Jugador 2");//agregamos nombre a boton
   gtk_box_pack_start_defaults (GTK_BOX(CVJ),EtiquetasJ[3]);//agregamos label a caja vertical
-  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->SOpciones->BotonInicia[0]);//agregamos bton iniciala caja vertical
-  gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->SOpciones->BotonInicia[1]);//agregamos los radios boton a la caja vertical
+  //gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->SOpciones->BotonInicia[0]);//agregamos bton inicial a caja vertical
+  //gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->SOpciones->BotonInicia[1]);//agregamos los radios boton a la caja vertical
 
   //Botones
   BotonJOK=gtk_button_new_from_stock(GTK_STOCK_OK);//nuevo boton OK

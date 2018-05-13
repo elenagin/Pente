@@ -95,7 +95,7 @@ void MenuGuardar(GtkWidget *Widget, gpointer data)
 
 
 /********************************************************
- *Funcion Abrir_menu_juego: se encarga de mandar en     *
+ *Funcion MenuAbrir: se encarga de mandar en     *
  * la pantalla, la ventana del menu para cargar una     *
  * partida guardada                                     *
  *                                                      *
@@ -265,7 +265,9 @@ void TerminarPartida(GtkWidget *Widget, gpointer data)
  ********************************************************/
 void IniciarPartida(GtkWidget *Widget, gpointer data)
 {
-
+ ptrWidgets Widgets=(ptrWidgets)data;
+ Widgets->STablero->Inicia=1;
+ limpiartablero();
 }//IniciarPartida
 
 /********************************************************
