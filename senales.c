@@ -1,9 +1,19 @@
-/*ARCHIVOS DE INCLUSIÓN*/
+/**
+* @file senales.c *
+* @brief Este programa permite capturar las señales que recibe el 
+* programa gráfico y realiza las funciones necesarias para lo que
+* piden dichos widgets gráficos.
+* @author Karina Almazán, Elena Ginebra
+* @date 01/05/2018 */
+
+/**
+ *ARCHIVOS DE INCLUSIÓN*/
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
 
-/*MÓDULOS*/
+/**
+*MÓDULOS INCLUÍDOS*/
 #include "tipos.h"
 #include "funciones.h"
 #include "ventanas.h"
@@ -11,15 +21,19 @@
 #include "tablerocodigo.h"
 #include "listatablero.h"
 
-/********************************************************
- *Funcion Pulsado: se encarga de mandar a cada boton de *
- * la pantalla de juego la ficha correspondiente a cada *
- * jugador, en base a su respectivo turno, en cualquier  *
- * modo de juego,jugador vs jugador o jugador vs maquina*
- *                                                      *
- *  Retorno:                                            *
- *  fichas en las casillas de la pantalla de juego      *
- ********************************************************/
+/**
+ *Función Pulsado: coloca la ficha en el tablero, manda a cada boton
+ *toda la informacción que necesita saber, por ejemplo, turno,
+ *si el juego se encuentra activo o no, si el botón se encuentra 
+ *libre o no, el color (jugador) de la ficha, etc.
+ *Regresa fichas en las casillas de la pantalla de juego
+ *Regresa ventana de error en caso de ser necesario
+ *Regresa turno actual
+ *Regresa puntaje, incluyendo si come fichas ó gana/pierde.
+ *@Elena
+ *@Param GtkWidget *Widget  El botón a colocar
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void Pulsado(GtkWidget *Widget, gpointer data)
 {
   GtkWidget *imagen, *vbox, *boton, *label;
@@ -77,30 +91,31 @@ void Pulsado(GtkWidget *Widget, gpointer data)
 }//pulsado
 
 
-/********************************************************
- *Funcion Abrir_menu_juego: se encarga de mandar en     *
- * la pantalla, la ventana del menu de juego.           *
- *                                                      *
- *  Retorno:                                            *
- *   ventana del menu de juego                          *
- ********************************************************/
+/**
+ *Función Abrir_menu_juego:  se encarga de mandar en
+ *la pantalla, la ventana del menu de juego.
+ *Regresa ventana del menu del juego
+ *@Karina, @Elena
+ *@Param GtkToolButton *toolbutton  El botón seleccionado
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void Abrir_menu_juego (GtkToolButton *toolbutton, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
   if(gtk_widget_get_window(Widgets->SVentanas->VenJ)==NULL)
     VentanaJuego(Widgets);
-  //gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Widgets->SOpciones->BotonInicia[0]),TRUE);
   if(Widgets->STablero->Activo==0)
     gtk_widget_show_all(Widgets->SVentanas->VenJ);
 }//Abrir_menu_juego
 
-/********************************************************
- *Funcion MenuGuardar: se encarga de mandar en pantalla *
- * la ventana del menu  guardar.                        *
- *                                                      *
- *  Retorno:                                            *
- *   ventana del menu guardar                           *
- ********************************************************/
+/**
+ *Función MenuGuardar:  se encarga de mandar en
+ *la pantalla, la ventana del menu guardar.
+ *Regresa ventana del menu del juego
+ *@Karina
+ *@Param GtkWidget *Widget  El botón seleccionado del menú.
+ *@Param gpointer data  Apuntador a todas las estructuras.
+ */
 void MenuGuardar(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
@@ -149,15 +164,15 @@ void MenuGuardar(GtkWidget *Widget, gpointer data)
 }//MenuGuardar
 
 
-
-/********************************************************
- *Funcion MenuAbrir: se encarga de mandar en     *
- * la pantalla, la ventana del menu para cargar una     *
- * partida guardada                                     *
- *                                                      *
- *  Retorno:                                            *
- *  ventana del menu para cargar partida                *
- ********************************************************/
+/**
+ *Función MenuAbrir:  se encarga de mandar en la
+ *pantalla, la ventana del menu para cargar una partida
+ *guardar.
+ *Regresa ventana del menu del juego
+ *@Karina
+ *@Param GtkWidget *Widget El botón seleccionado del menú
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void MenuAbrir(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
@@ -205,21 +220,22 @@ void MenuAbrir(GtkWidget *Widget, gpointer data)
 }//MenuAbrir
 
 
-/********************************************************
- *Funcion Manual: se encarga de mandar en pantalla, la  *
- * ventana manual de juego, explicando de manera        *
- * detallada cada funcion u opcion de juego al jugador  *
- *                                                      *
- *  Retorno:                                            *
- *  ventana del manual de juego                         *
- ********************************************************/
+/**
+ *Función Manual: se encarga de mandar en la pantalla,
+ *la ventana de ayuda del juego, explicando de manera detallada
+ *cómo jugar apropiadamente el juego al usuario.
+ *Regresa ventana en pantalla
+ *@Karina
+ *@Param GtkWidget *Widget El botón seleccionado del menú
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void Manual(GtkWidget *Widget,gpointer data)  
 {
-ptrWidgets Widgets=(ptrWidgets)data;
+  ptrWidgets Widgets=(ptrWidgets)data;
   GdkPixbuf *pixbuf;
-GtkWidget *picture;
-   GtkWidget *imagen, *boton, *vbox;
-
+  GtkWidget *picture;
+  GtkWidget *imagen, *boton, *vbox;
+  
   /* Create a Window. */
   Widgets->SVentanas->VenAy = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VenAy), "Ayuda");
@@ -237,29 +253,28 @@ GtkWidget *picture;
 }//manual
 
 
-/********************************************************
- *Funcion on_button_clicked:se encarga de destruir la   *
- * ventana.                                             *
- *                                                      *
- *  Retorno:                                            *
- *  Finaliza la ventana                                 *
- ********************************************************/
+/**
+ *Función on_button_clicked: se encarga de destruir la ventana.
+ *Regresa destrucción de ventana.
+ *@Karina, @Elena
+ *@Param GtkWidget *Widget  El botón seleccionado
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void on_button_clicked(GtkWidget *Widget, gpointer data)
 {
   gtk_widget_destroy(data);
 }//on_button_clicked
 
-
-/********************************************************
- *Funcion TerminarPartida: se encarga de mandar en      *
- * pantalla, la ventana en la que se pregunta al jugador*
- * si desea guardar la partida antes de finalizar el    *
- * juego, si acepta guardar, se manda a llamar la funcion
- * guardar, en caso contrario, se finaliza el juego     *
- *                                                      *
- *  Retorno:                                            *
- *  ventana de guardar partida para finalizar           *
- ********************************************************/
+/**
+ *Función TerminarPartida: se encarga de mandar en la pantalla
+ *la última ventana del juego donde puede guardar la partida
+ *antes de finalizar el juego, si acepta guardar, se manda
+ *a llamar la función guardar, en caso contrario, se finaliza
+ *el juego y se borran los datos necesarios.
+ *@Karina
+ *@Param GtkWidget *Widget El botón seleccionado del menú
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void TerminarPartida(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
@@ -304,21 +319,15 @@ void TerminarPartida(GtkWidget *Widget, gpointer data)
     }//if
 }//TerminarPartida
 
-
-/********************************************************
- *Funcion IniciarPartida: se encarga de mandar en       *
- * pantalla, la ventana en la que se pregunta al jugador*
- * el modo de juego que desea comenzar, presentando las *
- *opciones de jugador vs jugador
- *                                                      *
- * En caso de elegir jugador vs jugador:                *
- * se pide que se introduzca los nombres de cada uno y  *
- * que se seleccione el jugador que va a iniciar        *
- *                                                      *
- *                                                      *
- *  Retorno:                                            *
- *  pantalla de iniciar partida                         *
- ********************************************************/
+/**
+ *Función IniciarPartida: se encarga de inicializar
+ *todo el juego, ya sea en ceros el tablero del juego ó
+ *los turnos de los jugadores.
+ *Regresa valores inicializados del juego.
+ *@Elena
+ *@Param GtkWidget *Widget El botón seleccionado del menú
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void IniciarPartida(GtkWidget *Widget, gpointer data)
 {
  ptrWidgets Widgets=(ptrWidgets)data;
@@ -335,27 +344,28 @@ void IniciarPartida(GtkWidget *Widget, gpointer data)
  gtk_widget_hide(Widgets->SVentanas->VenJ);
 }//IniciarPartida
 
-/********************************************************
- *Funcion Esconder: se encarga de esconder la ventana   *
- * de juego, mandando a la terminal la cancelacion      *
- * de la partida.                                       *
- *                                                      *
- *  Retorno:                                            *
- *  Esconder la ventana del juego                       *
- ********************************************************/
+/**
+ *Función Esconder: se encarga de esconder la ventana
+ *de juego.
+ *Regresa destrucción de ventana juego.
+ *@Karina
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void Esconder(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
   gtk_widget_hide(Widgets->SVentanas->VenJ);
 }//esconder
 
-/********************************************************
- *Funcion Esconder2: se encarga de esconder el widget   *
- * actual, regresando a ventana principal.              *
- *                                                      *
- *  Retorno:                                            *
- *  Esconder la ventana                                 *
- ********************************************************/
+/**
+ *Función Esconder2: se encarga de esconder de la pantalla
+ *la ventana que marcar errores del juego.
+ *Regresa destrucción de ventana error.
+ *@Elena
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void Esconder2(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
@@ -363,13 +373,14 @@ void Esconder2(GtkWidget *Widget, gpointer data)
 }//esconder2
 
 
-/********************************************************
- *Funcion Acerca_de: se encarga de mandar en pantalla,  *
- * Los nombres de los desarrolladores del juego         *
- *                                                      *
- *  Retorno:                                            *
- *  ventana con los nombres de los desarrolladores      *
- ********************************************************/
+/**
+ *Función Acerca_de: se encarga de mandar en la pantalla
+ *Los nombres de los desarrolladores del juego Pente.
+ *Regresa ventana con los nombres de los desarrolladores  .
+ *@Karina
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void Acerca_de(GtkWidget *Widget, gpointer data)
 {
   ptrVentanas SVentanas=(ptrVentanas)data;
@@ -389,13 +400,14 @@ void Acerca_de(GtkWidget *Widget, gpointer data)
   gtk_widget_destroy(SVentanas->VenAd);
 }//Acerca_de
 
-/********************************************************
- *Funcion CerrarJuego: se encarga de finalizar el juego *
- * desde el icono de la barra de ayuda                  *
- *                                                      *
- *  Retorno:                                            *
- *  Finaliza el juego                                   *
- ********************************************************/
+/**
+ *Función CerrarJuego: se encarga de finalizar el juego
+ *desde la barra de ayuda.
+ *Regresa finalización del juego.
+ *@Karina
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void CerrarJuego(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
@@ -410,13 +422,14 @@ void CerrarJuego(GtkWidget *Widget, gpointer data)
     gtk_widget_destroy(Widgets->SVentanas->VenP);
 }//CerrarJuego
 
-/********************************************************
- *Funcion CerrarJuego1: se encarga de finalizar el juego*
- * desde el boton de cerrar ventana.                    *
- *                                                      *
- *  Retorno:                                            *
- *  Finaliza el juego                                   *
- ********************************************************/
+/**
+ *Función CerrarJuego1: se encarga de finalizar el juego
+ *desde el botono para cerrar la ventana del juego.
+ *Regresa finalización del juego.
+ *@Karina
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 gboolean CerrarJuego1(GtkWidget *Widget, GdkEvent *event, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
@@ -430,14 +443,15 @@ gboolean CerrarJuego1(GtkWidget *Widget, GdkEvent *event, gpointer data)
   return FALSE;
 }//CerrarJuego1
 
-/********************************************************
- *Funcion CerrarJuego2: se encarga de finalizar el juego*
- * ddonde se juntan CerrarJuego y CerrarJuego1 para     *
- * destruir la ventana                                  *
- *                                                      *
- *  Retorno:                                            *
- *  Finaliza el juego                                   *
- ********************************************************/
+
+/**
+ *Función CerrarJuego2: se encarga de finalizar el juego
+ *para destruir la ventana donde se junta con CerrarJuego
+ *y CerrarJuego1.
+ *@Karina
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void CerrarJuego2(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
@@ -450,14 +464,13 @@ void CerrarJuego2(GtkWidget *Widget, gpointer data)
   gtk_main_quit();
 }//CerrarJuego2
 
-
-/********************************************************
- *Funcion RecorreHistorial: se encarga de recorrer el   *
- * historial de juego                                   *
- *                                                      *
- *  Retorno:                                            *
- *  Historial el juego                                  *
- ********************************************************/
+/**
+ *Función RecorreHistorial: se encarga de recorrer todo el juego
+ *Regresa el recorrido de todo el historial del juego
+ *@
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void RecorreHistorial(GtkWidget *Widget, gpointer data)
 {
 
