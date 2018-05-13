@@ -7,6 +7,7 @@ void Manual(GtkWidget *Widget, gpointer info);
 void TerminarPartida(GtkWidget *Widget, gpointer info);
 void IniciarPartida(GtkWidget *Widget, gpointer info);
 void Esconder(GtkWidget *Widget, gpointer info);
+void Esconder2(GtkWidget *Widget, gpointer info);
 void CerrarJuego(GtkWidget *Widget, gpointer info);
 gboolean CerrarJuego1(GtkWidget *Widget, GdkEvent *event, gpointer info);
 void CerrarJuego2(GtkWidget *Widget, gpointer info);

@@ -19,6 +19,8 @@
 #include "senales.h"
 #include "funciones.h"
 #include "ventanas.h"
+#include "tablerocodigo.h"
+#include "listatablero.h"
 
 /****************************************************
  * Funcion VentanaPrincipal:Se establecen todos los *
@@ -131,7 +133,7 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
   Tabla=gtk_table_new(20,20,TRUE);//creacion de tabla
   for(i=0;i<20;i++)
     {
-      for(j=0;j<20;j++)//inicializamos la imagen poniendola vacia
+      for(j=0;j<20;j++)//inicializamos la imagen poniéndola vacia
 	{
 	  Widgets->STablero->Estados[i][j]=0;
 	  Widgets->STablero->B[i][j]=gtk_button_new();//nuevo boton
@@ -140,6 +142,7 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
 	  gtk_image_set_from_file(GTK_IMAGE(Widgets->STablero->Im[i][j]),"Archivos/0.png");
 	  sprintf(NombreBoton,"%d,%d",i,j);//modificar una cadena que sera nuestro nombre de boton
 	  gtk_widget_set_name(Widgets->STablero->B[i][j],NombreBoton);//dar nombre al boton
+	  //g_print("%d,%d ", i, j);
 	  gtk_widget_modify_bg(Widgets->STablero->B[i][j],GTK_STATE_NORMAL,&Tablero);      
 	  gtk_table_attach_defaults(GTK_TABLE(Tabla),Widgets->STablero->B[i][j],i,i+1,j,j+1);
 	  g_signal_connect(Widgets->STablero->B[i][j],"clicked",G_CALLBACK(Pulsado), Widgets);//llamada a la funcion dando click
@@ -153,24 +156,27 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
 
   CHPartida[0]=gtk_hbox_new(FALSE,10);//creacion de caja horizontal
   gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[0]);//caja horizontal en caja vertical
-  Widgets->STablero->RComidas=gtk_label_new("00");//creacion de label que indicara las jugadas o comidas
-  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[0]),Widgets->STablero->RComidas);//incluimos en la caja vertical el label
-  IVenB=gtk_image_new_from_file("Archivos/1.png");//creamos imagen
-  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[0]),IVenB);//agregamos imagen en la caja horizontal
-  Widgets->STablero->EJ[0]=gtk_label_new("Jugador1");//creamos label
+  Widgets->STablero->EJ[0]=gtk_label_new("Turno actual:\nJugador 1");//creamos label
   gtk_box_pack_start_defaults (GTK_BOX(CHPartida[0]),Widgets->STablero->EJ[0]);//agregamos label en caja horizontal
+  
+  CHPartida[1]=gtk_hbox_new(FALSE,10);//creacion de caja horizontal
+  gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[1]);//caja horizontal en caja vertical
+  Widgets->STablero->RComidas=gtk_label_new("00");//creacion de label que indicara las jugadas o comidas
+  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[1]),Widgets->STablero->RComidas);//incluimos en la caja vertical el label
+  IVenB=gtk_image_new_from_file("Archivos/1.png");//creamos imagen
+  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[1]),IVenB);//agregamos imagen en la caja horizontal
+  Widgets->STablero->EJ[1]=gtk_label_new("Jugador 1");//creamos label
+  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[1]),Widgets->STablero->EJ[1]);//agregamos label en caja horizontal
 
-  CHPartida[1]=gtk_hbox_new(FALSE,10);//creacion de segunda caja horizontal
-  gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[1]);//agregamos caja horizontal en caja de partida
+  CHPartida[2]=gtk_hbox_new(FALSE,10);//creacion de segunda caja horizontal
+  gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[2]);//agregamos caja horizontal en caja de partida
   Widgets->STablero->AComidas=gtk_label_new("00");//jugadas del jugador 2
-  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[1]),Widgets->STablero->AComidas);//agregamos comidas a la caja horizontal
+  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[2]),Widgets->STablero->AComidas);//agregamos comidas a la caja horizontal
   Im2=gtk_image_new_from_file("Archivos/2.png");//creamos imagen para jugador 2
-  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[1]),Im2);//agregamos imagen a la caja horizontal
-  Widgets->STablero->EJ[1]=gtk_label_new("Jugador2");//creamos label
-  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[1]),Widgets->STablero->EJ[1]);//agregamos label en la caja horizontal
+  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[2]),Im2);//agregamos imagen a la caja horizontal
+  Widgets->STablero->EJ[2]=gtk_label_new("Jugador 2");//creamos label
+  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[2]),Widgets->STablero->EJ[2]);//agregamos label en la caja horizontal
 
-  CHPartida[2]=gtk_fixed_new();//centramos el tiempo
-  gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[2]);//incluimos la caja de tiempo en la caja de partida
   gtk_widget_show_all(Widgets->SVentanas->VenP);  
 }//VentanaPrincipal
 
@@ -221,13 +227,8 @@ void VentanaJuego(ptrWidgets Widgets)
   gtk_box_pack_start_defaults (GTK_BOX(Widgets->SOpciones->CHJ[1]),Widgets->SOpciones->Entry[1]);//agregamos entry a caja horizontal
   
   //Orden de tiro
-  EtiquetasJ[3]=gtk_label_new("Nota: El jugador 1 siempre\nes quien empieza el juego.");//nuevo label
-  //Widgets->SOpciones->BotonInicia[0]=gtk_radio_button_new_with_label(NULL,"Jugador 1");//nuevo boton radio
-  //Widgets->SOpciones->Grupo=gtk_radio_button_get_group(GTK_RADIO_BUTTON(Widgets->SOpciones->BotonInicia[0]));//definimos orden de boton
-  //Widgets->SOpciones->BotonInicia[1]=gtk_radio_button_new_with_label(Widgets->SOpciones->Grupo,"Jugador 2");//agregamos nombre a boton
+  EtiquetasJ[3]=gtk_label_new("Nota: El jugador 1 siempre\n empieza el juego.");//nuevo label
   gtk_box_pack_start_defaults (GTK_BOX(CVJ),EtiquetasJ[3]);//agregamos label a caja vertical
-  //gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->SOpciones->BotonInicia[0]);//agregamos bton inicial a caja vertical
-  //gtk_box_pack_start_defaults (GTK_BOX(CVJ),Widgets->SOpciones->BotonInicia[1]);//agregamos los radios boton a la caja vertical
 
   //Botones
   BotonJOK=gtk_button_new_from_stock(GTK_STOCK_OK);//nuevo boton OK

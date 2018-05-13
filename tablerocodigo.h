@@ -9,8 +9,7 @@
  *@01/05/2018
 **/
 
-
-#indef tablerocodigoDEFINIDO
+#ifndef tablerocodigoDEFINIDO
 
 extern void limpiartablero(void);
 extern int ponerficha(char ficha, int i, int j, int guardar);

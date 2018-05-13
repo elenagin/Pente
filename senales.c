@@ -1,15 +1,20 @@
+/*ARCHIVOS DE INCLUSIÓN*/
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+
+/*MÓDULOS*/
 #include "tipos.h"
 #include "funciones.h"
 #include "ventanas.h"
 #include "senales.h"
+#include "tablerocodigo.h"
+#include "listatablero.h"
 
 /********************************************************
  *Funcion Pulsado: se encarga de mandar a cada boton de *
  * la pantalla de juego la ficha correspondiente a cada *
- * jugador, en base a su respectivo turno, en cuaquier  *
+ * jugador, en base a su respectivo turno, en cualquier  *
  * modo de juego,jugador vs jugador o jugador vs maquina*
  *                                                      *
  *  Retorno:                                            *
@@ -17,9 +22,60 @@
  ********************************************************/
 void Pulsado(GtkWidget *Widget, gpointer data)
 {
-//Lo que sucede cuando se pulsa una casilla
-}//pulsado
+  GtkWidget *imagen, *vbox, *boton, *label;
+  int i, j, x;
+  const gchar *text, *text2;
+  ptrWidgets Widgets=(ptrWidgets)data;
   
+  text = gtk_widget_get_name(Widget);
+  sscanf(text,"%d,%d",&i,&j);
+  if ((Widgets->STablero->Activo==1)&&(Widgets->STablero->Estados[i][j]==0))
+    {
+      if (Widgets->STablero->Turno==1)
+	{
+	  x= ponerficha(1,i,j,0);
+	  g_print("%d ", x);
+	  imagen=gtk_image_new();
+	  gtk_button_set_image(GTK_BUTTON(Widget),imagen);
+	  gtk_image_set_from_file(GTK_IMAGE(imagen),"Archivos/1.png");
+	  Widgets->STablero->Estados[i][j]=1;
+	  Widgets->STablero->Turno=2;
+	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 2");
+	}
+      else if (Widgets->STablero->Turno==2)
+	{
+	  x= ponerficha(2,i,j,0);
+	  g_print("%d ", x);
+	  imagen=gtk_image_new();
+	  gtk_button_set_image(GTK_BUTTON(Widget),imagen);
+	  gtk_image_set_from_file(GTK_IMAGE(imagen),"Archivos/2.png");
+	  Widgets->STablero->Estados[i][j]=2;
+	  Widgets->STablero->Turno=1;
+	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 1");
+	}      
+    }
+  else
+    {
+      vbox= gtk_vbox_new(TRUE,5);
+      Widgets->SVentanas->Error = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+      gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->Error), "Error");
+      gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->Error), GTK_WIN_POS_CENTER);
+      gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->Error), FALSE);
+      gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->Error),5);
+      if (Widgets->STablero->Estados[i][j]!=0)
+	label= gtk_label_new ("Error: Casilla ocupada.");
+      if (Widgets->STablero->Activo==0)
+	label= gtk_label_new ("Error: Para empezar a jugar\npresione botón \" Play \" ó \" Jugar \".");
+      boton=gtk_button_new_from_stock(GTK_STOCK_OK); 
+      gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(Esconder2), Widgets);
+      gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->Error),"destroy",GTK_SIGNAL_FUNC(Esconder2), Widgets); 
+      gtk_container_add(GTK_CONTAINER(vbox), label);
+      gtk_container_add(GTK_CONTAINER(vbox), boton);
+      gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->Error), vbox);
+      gtk_widget_show_all(Widgets->SVentanas->Error);
+    }
+}//pulsado
+
 
 /********************************************************
  *Funcion Abrir_menu_juego: se encarga de mandar en     *
@@ -33,7 +89,7 @@ void Abrir_menu_juego (GtkToolButton *toolbutton, gpointer data)
   ptrWidgets Widgets=(ptrWidgets)data;
   if(gtk_widget_get_window(Widgets->SVentanas->VenJ)==NULL)
     VentanaJuego(Widgets);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Widgets->SOpciones->BotonInicia[0]),TRUE);
+  //gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Widgets->SOpciones->BotonInicia[0]),TRUE);
   if(Widgets->STablero->Activo==0)
     gtk_widget_show_all(Widgets->SVentanas->VenJ);
 }//Abrir_menu_juego
@@ -266,8 +322,17 @@ void TerminarPartida(GtkWidget *Widget, gpointer data)
 void IniciarPartida(GtkWidget *Widget, gpointer data)
 {
  ptrWidgets Widgets=(ptrWidgets)data;
- Widgets->STablero->Inicia=1;
+ int i, j;
+ 
  limpiartablero();
+ Widgets->STablero->Inicia=1;
+ Widgets->STablero->Activo=1; //SEGMENTATION AL APRETAR CANCELAR Ó QUIT
+ Widgets->STablero->Turno=1;
+ Widgets->SOpciones->Jugadores[1]=gtk_entry_get_text(GTK_ENTRY(Widgets->SOpciones->Entry[0])); //guardamos nombre del jugador
+ Widgets->SOpciones->Jugadores[2]=gtk_entry_get_text(GTK_ENTRY(Widgets->SOpciones->Entry[1])); //guardamos nombre del jugador
+ gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[1]),Widgets->SOpciones->Jugadores[1]);
+ gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[2]),Widgets->SOpciones->Jugadores[2]);
+ gtk_widget_hide(Widgets->SVentanas->VenJ);
 }//IniciarPartida
 
 /********************************************************
@@ -283,6 +348,19 @@ void Esconder(GtkWidget *Widget, gpointer data)
   ptrWidgets Widgets=(ptrWidgets)data;
   gtk_widget_hide(Widgets->SVentanas->VenJ);
 }//esconder
+
+/********************************************************
+ *Funcion Esconder2: se encarga de esconder el widget   *
+ * actual, regresando a ventana principal.              *
+ *                                                      *
+ *  Retorno:                                            *
+ *  Esconder la ventana                                 *
+ ********************************************************/
+void Esconder2(GtkWidget *Widget, gpointer data)
+{
+  ptrWidgets Widgets=(ptrWidgets)data;
+  gtk_widget_hide(Widgets->SVentanas->Error);
+}//esconder2
 
 
 /********************************************************

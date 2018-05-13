@@ -25,7 +25,8 @@ typedef struct def_Ventanas
   GtkWidget *VenA;//Ventana Abrir
   GtkWidget *VenG;//Ventana GUardar
   GtkWidget *VenAy;//Ventana Ayuda
-  GtkWidget *VenAd;//Ventana Acerca de 
+  GtkWidget *VenAd;//Ventana Acerca de
+  GtkWidget *Error;//Ventanade error
 } tVentanas, *ptrVentanas;
 
 /*******************************************
@@ -42,7 +43,7 @@ typedef struct def_Tablero
   int Inicia;//Que jugador inicia
   GtkWidget *AComidas;//Azules comidas
   GtkWidget *RComidas;//Rosas comidas
-  GtkWidget *EJ[2];//Nombres de los jugadores
+  GtkWidget *EJ[3];//Nombres de los jugadores
   FILE *Temporal;//Archivo
 } tTablero, *ptrTablero;
 
