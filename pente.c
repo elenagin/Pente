@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
   ptrWidgets Widgets;/*Apuntada a estructura*/
   /*Inicializamos el ambiente*/
   gtk_init(&argc,&argv);
-  limpiartablero();
-  EliminarLista();
+  //limpiartablero();
+  //EliminarLista();
   Widgets=(ptrWidgets)malloc(sizeof(tWidgets));/*Creamos nuestro paquete de Widgets*/
   Widgets->SVentanas=(ptrVentanas)malloc(sizeof(tVentanas));
   Widgets->STablero=(ptrTablero)malloc(sizeof(tTablero));

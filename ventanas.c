@@ -141,7 +141,7 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
 	  gtk_image_set_from_file(GTK_IMAGE(Widgets->STablero->Im[i][j]),"Archivos/0.png");
 	  sprintf(NombreBoton,"%d,%d",i,j);//modificar una cadena que sera nuestro nombre de boton
 	  gtk_widget_set_name(Widgets->STablero->B[i][j],NombreBoton);//dar nombre al boton
-	  gtk_widget_modify_bg(Widgets->STablero->B[i][j],GTK_STATE_NORMAL,&Tablero);      
+	  gtk_widget_modify_bg(Widgets->STablero->B[i][j],GTK_STATE_NORMAL,&Tablero);
 	  gtk_table_attach_defaults(GTK_TABLE(Tabla),Widgets->STablero->B[i][j],i,i+1,j,j+1);
 	  g_signal_connect(Widgets->STablero->B[i][j],"clicked",G_CALLBACK(Pulsado), Widgets);//llamada a la funcion dando click
 	}//for
@@ -164,8 +164,9 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
   
   CHPartida[1]=gtk_hbox_new(FALSE,10);//creacion de caja horizontal
   gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[1]);//caja horizontal en caja vertical
-  Widgets->STablero->RComidas=gtk_label_new("00");//creacion de label que indicara las jugadas o comidas
-  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[1]),Widgets->STablero->RComidas);//incluimos en la caja vertical el label
+  Widgets->STablero->Num1Comidas=0;
+  Widgets->STablero->Comidas1=gtk_label_new("00");//creacion de label que indicara las jugadas o comidas
+  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[1]),Widgets->STablero->Comidas1);//incluimos en la caja vertical el label
   IVenB=gtk_image_new_from_file("Archivos/1.png");//creamos imagen
   gtk_box_pack_start_defaults (GTK_BOX(CHPartida[1]),IVenB);//agregamos imagen en la caja horizontal
   Widgets->STablero->EJ[1]=gtk_label_new("Jugador 1");//creamos label
@@ -173,8 +174,9 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
 
   CHPartida[2]=gtk_hbox_new(FALSE,10);//creacion de segunda caja horizontal
   gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[2]);//agregamos caja horizontal en caja de partida
-  Widgets->STablero->AComidas=gtk_label_new("00");//jugadas del jugador 2
-  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[2]),Widgets->STablero->AComidas);//agregamos comidas a la caja horizontal
+  Widgets->STablero->Num2Comidas=0;
+  Widgets->STablero->Comidas2=gtk_label_new("00");//jugadas del jugador 2
+  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[2]),Widgets->STablero->Comidas2);//agregamos comidas a la caja horizontal
   Im2=gtk_image_new_from_file("Archivos/2.png");//creamos imagen para jugador 2
   gtk_box_pack_start_defaults (GTK_BOX(CHPartida[2]),Im2);//agregamos imagen a la caja horizontal
   Widgets->STablero->EJ[2]=gtk_label_new("Jugador 2");//creamos label

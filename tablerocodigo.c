@@ -359,34 +359,3 @@ int ponerficha(char ficha, int i, int j, int guardar)
   return 1;
 }
 
-/*
-int main(void)
-{
-  PtrMovimiento p;
-  limpiartablero();
-  printf("resultado: %d\n", ponerficha('1', 1, 1, 1));
-  printf("resultado: %d\n", ponerficha('1', 1, 2, 1));
-  printf("resultado: %d\n", ponerficha('2', 2, 2, 1));
-  printf("resultado: %d\n", ponerficha('1', 2, 8, 1));
-  printf("resultado: %d\n", ponerficha('2', 3, 3, 1));
-  printf("resultado: %d\n", ponerficha('1', 4, 4, 1));
-  printf("resultado: %d\n", ponerficha('2', 2, 10, 1));
-  printf("resultado: %d\n", ponerficha('1', 2, 9, 1));
-  printf("resultado: %d\n", ponerficha('2', 5, 7, 1));
-  printf("resultado: %d\n", ponerficha('1', 4, 7, 1));
-  printf("resultado: %d\n", ponerficha('2', 8, 7, 1));
-  printf("resultado: %d\n", ponerficha('1', 3, 7, 1));
-  printf("resultado: %d\n", ponerficha('2', 2, 7, 1));
-  printf("comidas1 : %d\n", comidas1);
-  printf("comidas2 : %d\n", comidas2);
-  GuardarLista("prueba1.txt");
-  LeerLista("prueba1.txt");
-  p=raiz;
-  while(p)
-    {
-      printf("resultado: %d\n", ponerficha(p->color, p->i, p->j, 0));
-      p=p->siguiente;
-    }
-}
-  */
-

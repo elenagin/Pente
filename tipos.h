@@ -5,7 +5,9 @@
 *         estructuras a utilizar en la     *
 *         desarrollo de la parte grafica   *
 *         de este proyecto.                *
-*  @date 24/04/2018
+*  @Elena Ginebra                          *
+*  @Karina Almazán                         *
+*  @date 24/04/2018                        *
 *******************************************/
 
 /*******************************************
@@ -42,8 +44,10 @@ typedef struct def_Tablero
   int Activo;//Partida activa(bandera)
   int Turno;//De quien es el turno 
   int Inicia;//Que jugador inicia
-  GtkWidget *AComidas;//Azules comidas
-  GtkWidget *RComidas;//Rosas comidas
+  GtkWidget *Comidas1;//Jugador 1 comidas
+  GtkWidget *Comidas2;//Jugador 2 comidas
+  int Num1Comidas;//Jugador 1 comidas
+  int Num2Comidas;//Jugador 2 comidas
   GtkWidget *EJ[3];//Nombres de los jugadores
   FILE *Temporal;//Archivo
   GtkWidget *BotonTurnoActual;

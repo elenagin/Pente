@@ -11,6 +11,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 /**
 *MÓDULOS INCLUÍDOS*/
@@ -36,9 +37,10 @@
  */
 void Pulsado(GtkWidget *Widget, gpointer data)
 {
-  GtkWidget *imagen, *vbox, *boton, *label, *ImagenTurnoActual;
-  int i, j, x;
+  GtkWidget *imagen, *vbox, *boton, *label, *ImagenTurnoActual, *imagen2;
+  int i, j, x, i2, j2;
   const gchar *text, *text2;
+  char text3[3];
   ptrWidgets Widgets=(ptrWidgets)data;
   
   text = gtk_widget_get_name(Widget);
@@ -47,36 +49,84 @@ void Pulsado(GtkWidget *Widget, gpointer data)
     {
       if (Widgets->STablero->Turno==1)
 	{
+	  //Creación de imágenes
 	  imagen=gtk_image_new();
 	  gtk_image_set_from_file(GTK_IMAGE(imagen),"Archivos/1.png");
-	  gtk_button_set_image(GTK_BUTTON(Widget),imagen);
-	  Widgets->STablero->Estados[i][j]=1;
-	  x = ponerficha('1',i,j,1);
-	  //g_print("%d ",x);
+	  imagen2=gtk_image_new();
+	  gtk_image_set_from_file(GTK_IMAGE(imagen2),"Archivos/0.png");
 	  ImagenTurnoActual=gtk_image_new();
 	  gtk_image_set_from_file(GTK_IMAGE(ImagenTurnoActual),"Archivos/2.png");
-	  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),ImagenTurnoActual);
-	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 2");
-	  if (x==2)
-	    VentanaGanador(Widgets);
+	  
+	  gtk_button_set_image(GTK_BUTTON(Widget),imagen); //Cambia imagen de casilla
+	  Widgets->STablero->Estados[i][j]=1; //Cambia estado de casilla
+	  x = ponerficha('1',i,j,1); //Coloca ficha en tablero lógico
+	  g_print("%d ",x);
+	  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),ImagenTurnoActual); //Cambia imagen del turno actual
+	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 2"); //Cambia texto del turno actual
+	  if ((x==3)||(x==4)) //si se logra una comida
+	    {
+	      for(i2=0;i2<20;i2++) //recorre tableros
+		{
+		  for(j2=0;j2<20;j2++)
+		    {
+		      if ((tablero[i2][j2]-'0') != (Widgets->STablero->Estados[i2][j2])) //si tablero lógico es diferente al gráfico
+			{
+			  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->B[i2][j2]),imagen2); //cambia a imagen vacía por haber comido
+			  Widgets->STablero->Estados[i2][j2]=0; //cambia estado para imagen vacía
+			  Widgets->STablero->Num1Comidas++; //aumenta numero de comidas
+			  sprintf(text3,"%d",Widgets->STablero->Num1Comidas);
+			  gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas1), text3); //Cambia texto del turno actual
+			}
+		    }
+		}
+	    }
+	  if ((x==2)||(x==4))//si gana el juego
+	    {
+	      VentanaGanador(Widgets); //abre ventana de ganador para posteriormente terminar partida
+	      return;
+	    }
 	  Widgets->STablero->Turno=2;
-	}
+        }
       else if (Widgets->STablero->Turno==2)
 	{
+	  //Creación de imágenes
 	  imagen=gtk_image_new();
 	  gtk_image_set_from_file(GTK_IMAGE(imagen),"Archivos/2.png");
-	  gtk_button_set_image(GTK_BUTTON(Widget),imagen);
-	  Widgets->STablero->Estados[i][j]=2;
-	  x = ponerficha('2',i,j,1);
-	  //g_print("%d ", x);
+	  imagen2=gtk_image_new();
+	  gtk_image_set_from_file(GTK_IMAGE(imagen2),"Archivos/0.png");
 	  ImagenTurnoActual=gtk_image_new();
 	  gtk_image_set_from_file(GTK_IMAGE(ImagenTurnoActual),"Archivos/1.png");
-	  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),ImagenTurnoActual);
-	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 1");
-	  if (x==2)
-	    VentanaGanador(Widgets);
+	  
+	  gtk_button_set_image(GTK_BUTTON(Widget),imagen); //Cambia imagen de casilla
+	  Widgets->STablero->Estados[i][j]=2; //Cambia estado de casilla
+	  x = ponerficha('2',i,j,1); //Coloca ficha en tablero lógico
+	  g_print("%d ",x);
+	  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),ImagenTurnoActual); //Cambia imagen del turno actual
+	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 1"); //Cambia texto del turno actual
+	  if ((x==3)||(x==4)) //si se logra una comida
+	    {
+	      for(i2=0;i2<20;i2++) //recorre tableros
+		{
+		  for(j2=0;j2<20;j2++)
+		    {
+		      if ((tablero[i2][j2]-'0')!= Widgets->STablero->Estados[i2][j2]) //si tablero lógico es diferente al gráfico
+			{
+			  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->B[i2][j2]),imagen2); //cambia a imagen vacía por haber comido
+			  Widgets->STablero->Estados[i2][j2]=0; //cambia estado a imagen vacía
+			  Widgets->STablero->Num2Comidas++; //aumenta numero de comidas
+			  sprintf(text3,"%d",Widgets->STablero->Num2Comidas);
+			  gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas2), text3); //Cambia texto del turno actual
+			}
+		    }
+		}
+	    }
+	  if ((x==2)||(x==4))//si gana el juego
+	    {
+	      VentanaGanador(Widgets); //abre ventana de ganador para posteriormente terminar partida
+	      return;
+	    }
 	  Widgets->STablero->Turno=1;
-	}      
+        }
     }
   else
     {
@@ -90,7 +140,7 @@ void Pulsado(GtkWidget *Widget, gpointer data)
 	label= gtk_label_new ("Error: Casilla ocupada.");
       if (Widgets->STablero->Activo==0)
 	label= gtk_label_new ("Error: para empezar a jugar\npresione botón \" Play \" o \" Jugar \".");
-      boton=gtk_button_new_from_stock(GTK_STOCK_OK); 
+      boton=gtk_button_new_from_stock(GTK_STOCK_OK);
       gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(Esconder2), Widgets);
       gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->Error),"destroy",GTK_SIGNAL_FUNC(Esconder2), Widgets); 
       gtk_container_add(GTK_CONTAINER(vbox), label);
@@ -135,6 +185,9 @@ void MenuGuardar(GtkWidget *Widget, gpointer data)
       GtkFileChooser *chooser;
       GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
       gint res;
+      GtkWidget *dialog;
+      char *NombreArchivo;
+      char Extension[]=".pte";
       
       Widgets->SVentanas->VenG= gtk_file_chooser_dialog_new ("Guardar Partida",
 							 GTK_WINDOW(Widgets->SVentanas->VenP),
@@ -149,8 +202,6 @@ void MenuGuardar(GtkWidget *Widget, gpointer data)
       res=gtk_dialog_run(GTK_DIALOG(Widgets->SVentanas->VenG));
       if (res==GTK_RESPONSE_ACCEPT)
 	{
-	  char *NombreArchivo;
-	  char Extension[]=".pte";
 	  NombreArchivo=gtk_file_chooser_get_filename (chooser);
 	  l=strlen(NombreArchivo);
 	  if(NombreArchivo[l-1]!='e' || NombreArchivo[l-2]!='t' || NombreArchivo[l-3]!='p' || NombreArchivo[l-4]!='.')
@@ -161,7 +212,6 @@ void MenuGuardar(GtkWidget *Widget, gpointer data)
     }//if
   else
     {
-      GtkWidget *dialog;
       dialog = gtk_message_dialog_new(GTK_WINDOW(Widgets->SVentanas->VenP),
 				      GTK_DIALOG_DESTROY_WITH_PARENT,
 				      GTK_MESSAGE_ERROR,
@@ -327,8 +377,8 @@ void TerminarPartida(GtkWidget *Widget, gpointer data)
       gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]),"Turno actual:\nJugador 1");
       gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[1]),"Jugador1");
       gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[2]),"Jugador2");
-      gtk_label_set_text(GTK_LABEL(Widgets->STablero->RComidas),"00");
-      gtk_label_set_text(GTK_LABEL(Widgets->STablero->AComidas),"00");
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas1),"00");
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas2),"00");
       if((strcasecmp(gtk_widget_get_name(Widget),"Abrir"))==0)
 	MenuAbrir(Dialog2,Widgets);
       limpiartablero();
@@ -450,7 +500,10 @@ void CerrarJuego(GtkWidget *Widget, gpointer data)
 	gtk_widget_destroy(Widgets->SVentanas->VenP);
     }//if
   else
-    gtk_widget_destroy(Widgets->SVentanas->VenP);
+    {
+      gtk_widget_hide(Widgets->SVentanas->VenP);
+      gtk_main_quit();
+    }
 }//CerrarJuego
 
 /**
