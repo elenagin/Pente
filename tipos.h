@@ -17,16 +17,17 @@ typedef struct def_Ventanas
   GtkWidget *VenP;//Ventana Principal
   GtkWidget *VenB;//Ventana Bienvenida
   GtkWidget *VenI;//Ventana instrucciones
-  GtkWidget *M2;//Mensaje 2
-  GtkWidget *M3;//Mensaje 3
-  GtkWidget *Des1;//Dialogo 1
-  GtkWidget *Des2;//Dialogo 2
-  GtkWidget *VenJ;//Ventana jugar
-  GtkWidget *VenA;//Ventana Abrir
-  GtkWidget *VenG;//Ventana GUardar
   GtkWidget *VenAy;//Ventana Ayuda
   GtkWidget *VenAd;//Ventana Acerca de
-  GtkWidget *Error;//Ventanade error
+  GtkWidget *Error;//Ventana de error
+  GtkWidget *VenGan; //Ventana ganador
+  GtkWidget *M2;//Mensaje 2
+  GtkWidget *M3;//Mensaje 3
+  GtkWidget *Des1;//Diálogo 1
+  GtkWidget *Des2;//Diálogo 2
+  GtkWidget *VenJ;//Ventana jugar
+  GtkWidget *VenA;//Ventana Abrir
+  GtkWidget *VenG;//Ventana Guardar
 } tVentanas, *ptrVentanas;
 
 /*******************************************
@@ -45,6 +46,7 @@ typedef struct def_Tablero
   GtkWidget *RComidas;//Rosas comidas
   GtkWidget *EJ[3];//Nombres de los jugadores
   FILE *Temporal;//Archivo
+  GtkWidget *BotonTurnoActual;
 } tTablero, *ptrTablero;
 
 /*******************************************

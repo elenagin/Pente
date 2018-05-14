@@ -41,11 +41,11 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
   GtkWidget *Tool;
   GtkToolItem *TJ, *TG, *TA, *Sep1, *TAy, *TAd, *Sep2, *TS;
   GtkWidget *Tabla;
-  GdkColor Tablero={0,0xF200,0xEB00,0xD500};/*Declara un color*/
-  GtkWidget *CHPartida[3], *IVenB, *Im2;
+  GdkColor Tablero={0, 0xe000, 0xe000, 0xe000};/*Declara un color*/
+  GtkWidget *CHPartida[3], *IVenB, *Im2, *ImagenTurnoActual;
   ptrWidgets Widgets=(ptrWidgets)data;
   gtk_widget_hide(Widgets->SVentanas->VenI);
-  
+
   //Cajas
   CV=gtk_vbox_new(FALSE,0);//Creamos caja vertical
   CH=gtk_hbox_new(FALSE,0);//Creamos caja Horizontal
@@ -56,7 +56,6 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
   Widgets->SVentanas->VenP=gtk_window_new(GTK_WINDOW_TOPLEVEL);//Creamos ventana principal, esta se encuentra en una estructura
   gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VenP),FALSE);//fijamos atributo de la ventana 
   gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenP),GTK_WIN_POS_CENTER);//fijamos posicion de la ventana
-  //Registramos la llamada a funciones con g_signal_connect, usaremos la funcion salir
   gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VenP), "Pente");
   g_signal_connect(Widgets->SVentanas->VenP,"delete_event",G_CALLBACK(CerrarJuego1), Widgets);
   g_signal_connect(Widgets->SVentanas->VenP,"destroy",G_CALLBACK(CerrarJuego2), Widgets);
@@ -142,7 +141,6 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
 	  gtk_image_set_from_file(GTK_IMAGE(Widgets->STablero->Im[i][j]),"Archivos/0.png");
 	  sprintf(NombreBoton,"%d,%d",i,j);//modificar una cadena que sera nuestro nombre de boton
 	  gtk_widget_set_name(Widgets->STablero->B[i][j],NombreBoton);//dar nombre al boton
-	  //g_print("%d,%d ", i, j);
 	  gtk_widget_modify_bg(Widgets->STablero->B[i][j],GTK_STATE_NORMAL,&Tablero);      
 	  gtk_table_attach_defaults(GTK_TABLE(Tabla),Widgets->STablero->B[i][j],i,i+1,j,j+1);
 	  g_signal_connect(Widgets->STablero->B[i][j],"clicked",G_CALLBACK(Pulsado), Widgets);//llamada a la funcion dando click
@@ -156,7 +154,12 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
 
   CHPartida[0]=gtk_hbox_new(FALSE,10);//creacion de caja horizontal
   gtk_box_pack_start_defaults (GTK_BOX(CPartida),CHPartida[0]);//caja horizontal en caja vertical
+  ImagenTurnoActual=gtk_image_new();
+  gtk_image_set_from_file(GTK_IMAGE(ImagenTurnoActual), "Archivos/1.png");//creamos imagen
+  Widgets->STablero->BotonTurnoActual=gtk_button_new();
+  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),ImagenTurnoActual);
   Widgets->STablero->EJ[0]=gtk_label_new("Turno actual:\nJugador 1");//creamos label
+  gtk_box_pack_start_defaults (GTK_BOX(CHPartida[0]),Widgets->STablero->BotonTurnoActual);//agregamos imagen a la caja horizontal
   gtk_box_pack_start_defaults (GTK_BOX(CHPartida[0]),Widgets->STablero->EJ[0]);//agregamos label en caja horizontal
   
   CHPartida[1]=gtk_hbox_new(FALSE,10);//creacion de caja horizontal
@@ -310,3 +313,33 @@ void VentanaInstrucciones(GtkWidget *widget, gpointer data)
   
   gtk_widget_show_all(Widgets->SVentanas->VenI);
 }//VentanaInstrucciones
+
+void VentanaGanador(ptrWidgets Widgets)
+{
+  GtkWidget *boton, *vbox, *label;
+
+  vbox= gtk_vbox_new(TRUE,5);
+  Widgets->SVentanas->VenGan = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VenGan), "Ganador");
+  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenGan), GTK_WIN_POS_CENTER);
+  gtk_window_set_default_size(GTK_WINDOW(Widgets->SVentanas->VenGan),500,500);
+  gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VenGan), FALSE);
+  gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->VenGan),5);
+  if (Widgets->STablero->Turno==1)
+    {
+      label= gtk_label_new ("¡Felicidades  Jugador 1!\n                GANASTE");
+      Widgets->STablero->Turno=2;
+    }
+  else if (Widgets->STablero->Turno==2)
+    {
+    label= gtk_label_new ("¡Felicidades  Jugador 2!\n                GANASTE");
+    Widgets->STablero->Turno=1;
+    }
+  boton=gtk_button_new_from_stock(GTK_STOCK_OK);
+  gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(TerminarPartida), Widgets);
+  gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->VenGan),"destroy",GTK_SIGNAL_FUNC(Esconder3), Widgets); 
+  gtk_container_add(GTK_CONTAINER(vbox), label);
+  gtk_container_add(GTK_CONTAINER(vbox), boton);
+  gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VenGan), vbox);
+  gtk_widget_show_all(Widgets->SVentanas->VenGan);
+}

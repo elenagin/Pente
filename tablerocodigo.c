@@ -12,8 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "listatablero.h"
-
-#define DIMTABLERO 20
+#include "tablerocodigo.h"
 
 char tablero[DIMTABLERO][DIMTABLERO];
 static int comidas1, comidas2; //Para saber cuantas fichas de cada tipo se han consumido.

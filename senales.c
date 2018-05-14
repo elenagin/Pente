@@ -36,7 +36,7 @@
  */
 void Pulsado(GtkWidget *Widget, gpointer data)
 {
-  GtkWidget *imagen, *vbox, *boton, *label;
+  GtkWidget *imagen, *vbox, *boton, *label, *ImagenTurnoActual;
   int i, j, x;
   const gchar *text, *text2;
   ptrWidgets Widgets=(ptrWidgets)data;
@@ -47,25 +47,35 @@ void Pulsado(GtkWidget *Widget, gpointer data)
     {
       if (Widgets->STablero->Turno==1)
 	{
-	  x= ponerficha(1,i,j,0);
-	  g_print("%d ", x);
 	  imagen=gtk_image_new();
-	  gtk_button_set_image(GTK_BUTTON(Widget),imagen);
 	  gtk_image_set_from_file(GTK_IMAGE(imagen),"Archivos/1.png");
+	  gtk_button_set_image(GTK_BUTTON(Widget),imagen);
 	  Widgets->STablero->Estados[i][j]=1;
-	  Widgets->STablero->Turno=2;
+	  x = ponerficha('1',i,j,1);
+	  //g_print("%d ",x);
+	  ImagenTurnoActual=gtk_image_new();
+	  gtk_image_set_from_file(GTK_IMAGE(ImagenTurnoActual),"Archivos/2.png");
+	  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),ImagenTurnoActual);
 	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 2");
+	  if (x==2)
+	    VentanaGanador(Widgets);
+	  Widgets->STablero->Turno=2;
 	}
       else if (Widgets->STablero->Turno==2)
 	{
-	  x= ponerficha(2,i,j,0);
-	  g_print("%d ", x);
 	  imagen=gtk_image_new();
-	  gtk_button_set_image(GTK_BUTTON(Widget),imagen);
 	  gtk_image_set_from_file(GTK_IMAGE(imagen),"Archivos/2.png");
+	  gtk_button_set_image(GTK_BUTTON(Widget),imagen);
 	  Widgets->STablero->Estados[i][j]=2;
-	  Widgets->STablero->Turno=1;
+	  x = ponerficha('2',i,j,1);
+	  //g_print("%d ", x);
+	  ImagenTurnoActual=gtk_image_new();
+	  gtk_image_set_from_file(GTK_IMAGE(ImagenTurnoActual),"Archivos/1.png");
+	  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),ImagenTurnoActual);
 	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 1");
+	  if (x==2)
+	    VentanaGanador(Widgets);
+	  Widgets->STablero->Turno=1;
 	}      
     }
   else
@@ -79,7 +89,7 @@ void Pulsado(GtkWidget *Widget, gpointer data)
       if (Widgets->STablero->Estados[i][j]!=0)
 	label= gtk_label_new ("Error: Casilla ocupada.");
       if (Widgets->STablero->Activo==0)
-	label= gtk_label_new ("Error: Para empezar a jugar\npresione botón \" Play \" ó \" Jugar \".");
+	label= gtk_label_new ("Error: para empezar a jugar\npresione botón \" Play \" o \" Jugar \".");
       boton=gtk_button_new_from_stock(GTK_STOCK_OK); 
       gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(Esconder2), Widgets);
       gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->Error),"destroy",GTK_SIGNAL_FUNC(Esconder2), Widgets); 
@@ -278,44 +288,51 @@ void on_button_clicked(GtkWidget *Widget, gpointer data)
 void TerminarPartida(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
-  int i,j;
+  int i=0,j=0;
+  GtkWidget *Dialog2, *imagen, *Tabla, *ImagenTurnoActual;
+  int Decision;
+  gchar NombreBoton[6];
+  GdkPixbuf *pixbuf;
+  GdkColor ColorTablero={0,0xF200,0xEB00,0xD500};/*Declara un color*/
+  
   if(Widgets->STablero->Activo!=0)
     {
-      GtkWidget *Dialog2;
-      int Desicion;
-      Dialog2=gtk_message_dialog_new(GTK_WINDOW(Widgets->SVentanas->VenP),
-				     GTK_DIALOG_DESTROY_WITH_PARENT,
-				     GTK_MESSAGE_QUESTION,
-				     GTK_BUTTONS_YES_NO,
-				     "¿Desea guardar la partida actual?");
+      Dialog2=gtk_message_dialog_new(GTK_WINDOW(Widgets->SVentanas->VenP), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "¿Desea guardar la partida actual?");
       gtk_window_set_position(GTK_WINDOW(Dialog2),GTK_WIN_POS_CENTER);
       gtk_window_set_title(GTK_WINDOW(Dialog2), "Partida en marcha");
-      Desicion=gtk_dialog_run(GTK_DIALOG(Dialog2));
+      Decision=gtk_dialog_run(GTK_DIALOG(Dialog2));
       gtk_widget_destroy(Dialog2);
-      if(Desicion==GTK_RESPONSE_YES)
+      if(Decision==GTK_RESPONSE_YES)
 	MenuGuardar(Dialog2,Widgets);
-      if(Desicion==GTK_RESPONSE_NO || Desicion==GTK_RESPONSE_YES)
-        {
-	  Widgets->STablero->Activo=0;
-	  Widgets->STablero->Turno=0;
-	  for(i=0;i<20;i++)
-            {
-	      for(j=0;j<20;j++)
-                {
-		  if(Widgets->STablero->Estados[i][j]!=0)
-                    {
-		      gtk_image_set_from_file(GTK_IMAGE(Widgets->STablero->Im[i][j]),"Archivos/0.png");
-		      Widgets->STablero->Estados[i][j]=0;
-                    }//if
-                }//for
-            }//for
-	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]),"Jugador1");
-	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[1]),"Jugador2");
+      Widgets->STablero->Activo=0;
+      Widgets->STablero->Turno=0;
+      Tabla=gtk_table_new(20,20,TRUE);//creacion de tabla
+      imagen=gtk_image_new();
+      gtk_image_set_from_file(GTK_IMAGE(imagen),"Archivos/0.png");
+      for(i=0;i<20;i++)
+	{
+	  for(j=0;j<20;j++)
+	    {
+	      if(Widgets->STablero->Estados[i][j]!=0)
+		{
+		  Widgets->STablero->Estados[i][j]=0;
+		  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->B[i][j]),imagen);
+		}//if
+	    }//for
+	}//for
+      ImagenTurnoActual=gtk_image_new();
+      gtk_image_set_from_file(GTK_IMAGE(ImagenTurnoActual),"Archivos/1.png");
+      gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),ImagenTurnoActual);
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 1");
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]),"Turno actual:\nJugador 1");
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[1]),"Jugador1");
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[2]),"Jugador2");
       gtk_label_set_text(GTK_LABEL(Widgets->STablero->RComidas),"00");
       gtk_label_set_text(GTK_LABEL(Widgets->STablero->AComidas),"00");
-	  if((strcasecmp(gtk_widget_get_name(Widget),"Abrir"))==0)
-	    MenuAbrir(Dialog2,Widgets);
-        }//if
+      if((strcasecmp(gtk_widget_get_name(Widget),"Abrir"))==0)
+	MenuAbrir(Dialog2,Widgets);
+      limpiartablero();
+      EliminarLista();
     }//if
 }//TerminarPartida
 
@@ -334,6 +351,7 @@ void IniciarPartida(GtkWidget *Widget, gpointer data)
  int i, j;
  
  limpiartablero();
+ EliminarLista();
  Widgets->STablero->Inicia=1;
  Widgets->STablero->Activo=1; //SEGMENTATION AL APRETAR CANCELAR Ó QUIT
  Widgets->STablero->Turno=1;
@@ -372,6 +390,19 @@ void Esconder2(GtkWidget *Widget, gpointer data)
   gtk_widget_hide(Widgets->SVentanas->Error);
 }//esconder2
 
+/**
+ *Función Esconder3: se encarga de esconder de la pantalla
+ *la ventana que marcar errores del juego.
+ *Regresa destrucción de ventana del ganador.
+ *@Elena
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
+void Esconder3(GtkWidget *Widget, gpointer data)
+{
+  ptrWidgets Widgets=(ptrWidgets)data;
+  gtk_widget_hide(Widgets->SVentanas->VenGan);
+}//esconder3
 
 /**
  *Función Acerca_de: se encarga de mandar en la pantalla
@@ -411,11 +442,11 @@ void Acerca_de(GtkWidget *Widget, gpointer data)
 void CerrarJuego(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
-  gboolean Desicion;
+  gboolean Decision;
   if(Widgets->STablero->Activo!=0)
     {
-      Desicion=DialogoCerrar(Widgets);
-      if(Desicion!=-99)
+      Decision=DialogoCerrar(Widgets);
+      if(Decision!=-99)
 	gtk_widget_destroy(Widgets->SVentanas->VenP);
     }//if
   else
@@ -433,11 +464,11 @@ void CerrarJuego(GtkWidget *Widget, gpointer data)
 gboolean CerrarJuego1(GtkWidget *Widget, GdkEvent *event, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
-  gboolean Desicion;
+  gboolean Decision;
   if(Widgets->STablero->Activo!=0)
     {
-      Desicion=DialogoCerrar(Widgets);
-      if(Desicion==-99)
+      Decision=DialogoCerrar(Widgets);
+      if(Decision==-99)
 	return TRUE;
     }//if
   return FALSE;

@@ -11,6 +11,9 @@
 
 #ifndef tablerocodigoDEFINIDO
 
+#define DIMTABLERO 20
+
+extern char tablero[DIMTABLERO][DIMTABLERO];
 extern void limpiartablero(void);
 extern int ponerficha(char ficha, int i, int j, int guardar);
 
