@@ -21,18 +21,13 @@
  ********************************************************/
 void CargarPartida(ptrWidgets Widgets, char *NombreArchivo)
 {
-  int num;
-
   Widgets->STablero->BanderaNext=1;
   limpiartablero();
   Widgets->STablero->Inicia=1;
   Widgets->STablero->Turno=1;
-  num = LeerLista(NombreArchivo);
-  Widgets->STablero->Comidas1=gtk_label_new("00");//creacion de label que indicara las jugadas o comidas
-  Widgets->STablero->Comidas2=gtk_label_new("00");//creacion de label que indicara las jugadas o comidas
-  
-  Widgets->STablero->Num1Comidas=0;//creacion de label que indicara las jugadas o comidas
-  Widgets->STablero->Num2Comidas=0;//creacion de label que indicara las jugadas o comidas
+  LeerLista(NombreArchivo);  
+  Widgets->STablero->Num1Comidas=0;//pone numero de comidas en cero
+  Widgets->STablero->Num2Comidas=0;//pone numero de comidas en cero
 }//CargarPartida
 
 
