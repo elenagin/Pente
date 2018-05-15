@@ -722,8 +722,9 @@ void RecorreHistorial(GtkWidget *Widget, gpointer data)
 }//RecorreHistorial
 
 /**
- *Función SeguirAMano: se encarga de recorrer toda la lista del juego
- *Regresa el recorrido de todo el historial del juego
+ *Función SeguirAMano: se encarga de truncar la lista del juego,
+ *es decir para la lista de las jugadas y borra lo siguiente en la lista
+ *para que el usuario pueda seguir jugando "a mano".
  *@Elena
  *@Param GtkWidget *Widget El botón apuntador
  *@Param gpointer data  Apuntador a todas las estructuras
