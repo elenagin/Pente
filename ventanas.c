@@ -39,7 +39,8 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
   gchar NombreBoton[6];
   GtkWidget *MenuB,*MenuI1,*MenuI2,*Menu1,*Menu2,*MenuIJ,*MenuIG,*MenuIR,*MenuIT,*MenuIM,*MenuIAd;
   GtkWidget *Tool;
-  GtkToolItem *TJ, *TG, *TA, *Sep1, *TAy, *TAd, *Sep2, *TS;
+  GtkToolItem *TJ, *TG, *TA, *Sep1, *TAy, *TAd, *Sep2;
+  GtkToolItem *TS, *ToolNext, *ToolStop, *Separador3;
   GtkWidget *Tabla;
   GdkColor Tablero={0, 0xe000, 0xe000, 0xe000};/*Declara un color*/
   GtkWidget *CHPartida[3], *IVenB, *Im2, *ImagenTurnoActual;
@@ -109,6 +110,11 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
   TAd=gtk_tool_button_new_from_stock(GTK_STOCK_ABOUT);//creacion del icono acerca de
   g_signal_connect(TAd,"clicked",G_CALLBACK(Acerca_de),Widgets->SVentanas);//llamada a la funcion Acerca de
   Sep2=gtk_separator_tool_item_new();//creamos un segundo separador
+  ToolNext=gtk_tool_button_new_from_stock(GTK_STOCK_MEDIA_NEXT);//creación del icono salir
+  g_signal_connect(ToolNext,"clicked",G_CALLBACK(RecorreHistorial),Widgets);//llamada a la funcion Salir
+  ToolStop=gtk_tool_button_new_from_stock(GTK_STOCK_MEDIA_STOP);//creación del icono salir
+  g_signal_connect(ToolStop,"clicked",G_CALLBACK(SeguirAMano),Widgets);//llamada a la funcion Salir
+  Separador3=gtk_separator_tool_item_new();//creamos un tercer separador
   TS=gtk_tool_button_new_from_stock(GTK_STOCK_QUIT);//cracion del icono salir
   g_signal_connect(TS,"clicked",G_CALLBACK(CerrarJuego),Widgets);//llamada a la funcion Salir
 
@@ -119,9 +125,12 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), TG, -1);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), TA, -1);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), Sep1, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), ToolNext, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), ToolStop, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), Sep2, -1);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), TAy, -1);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), TAd, -1);
-  gtk_toolbar_insert(GTK_TOOLBAR(Tool), Sep2, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), Separador3, -1);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), TS, -1);
   gtk_box_pack_start (GTK_BOX(CV),Tool,FALSE,TRUE,0);//incluimos la toolbar en la caja vertical
   

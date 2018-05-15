@@ -1,10 +1,13 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "tipos.h"
 #include "senales.h"
 #include "funciones.h"
 #include "ventanas.h"
+#include "listatablero.h"
+#include "tablerocodigo.h"
 
 /********************************************************
  * Funcion CargarPartida: Se carga el historial de una  *
@@ -17,7 +20,14 @@
  ********************************************************/
 void CargarPartida(ptrWidgets Widgets, char *NombreArchivo)
 {
-
+  int num;
+  Widgets->STablero->BanderaNext=1;
+  limpiartablero();
+  Widgets->STablero->Inicia=1;
+  Widgets->STablero->Turno=1;
+  num = LeerLista(NombreArchivo);
+  Widgets->STablero->Num1Comidas=0;//creacion de label que indicara las jugadas o comidas
+  Widgets->STablero->Num2Comidas=0;//creacion de label que indicara las jugadas o comidas
 }//CargarPartida
 
 
@@ -33,26 +43,9 @@ void CargarPartida(ptrWidgets Widgets, char *NombreArchivo)
 
 void GuardarPartida(ptrWidgets Widgets, char *NombreArchivo)
 {
+  GuardarLista(NombreArchivo);
 
 }//GuardarPArtida
-
-
-/********************************************************
- * Funcion Juez: se encarga de hacer que la computadora *
- * funja como juez en la partida de un jugador contra   *
- * otro jugador, de manera que pueda detectar al jugador*
- * ganador, al mismo tiempo que manda a pantalla el     *
- * nombre del jugador ganador.                          *
- * los jugadores podran comerse fichas entre si.        *
- *                                                      *
- *  Retorno:                                            *
- *  mensaje en pantalla de aviso sobre quien fue el     *
- *  ganador del juego, ya sea jugador 1 o jugador 2     *
- ********************************************************/
-gboolean Juez(GtkWidget *Widget, ptrWidgets Widgets)
-{
-  }//Juez
-
 
 
 /********************************************************

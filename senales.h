@@ -15,3 +15,4 @@ void CerrarJuego2(GtkWidget *Widget, gpointer info);
 void Acerca_de(GtkWidget *Widget, gpointer info);
 void RecorreHistorial(GtkWidget *Widget, gpointer info);
 void on_button_clicked(GtkWidget *Widget, gpointer info);
+void SeguirAMano(GtkWidget *Widget, gpointer info);

@@ -22,6 +22,8 @@
 #include "tablerocodigo.h"
 #include "listatablero.h"
 
+static int numerodejugada=1;
+
 /**
  *Función Pulsado: coloca la ficha en el tablero, manda a cada boton
  *toda la informacción que necesita saber, por ejemplo, turno,
@@ -45,7 +47,7 @@ void Pulsado(GtkWidget *Widget, gpointer data)
   
   text = gtk_widget_get_name(Widget);
   sscanf(text,"%d,%d",&i,&j);
-  if ((Widgets->STablero->Activo==1)&&(Widgets->STablero->Estados[i][j]==0))
+  if ((Widgets->STablero->Activo==1)&&(Widgets->STablero->Estados[i][j]==0)&&(Widgets->STablero->BanderaNext==0))
     {
       if (Widgets->STablero->Turno==1)
 	{
@@ -60,7 +62,7 @@ void Pulsado(GtkWidget *Widget, gpointer data)
 	  gtk_button_set_image(GTK_BUTTON(Widget),imagen); //Cambia imagen de casilla
 	  Widgets->STablero->Estados[i][j]=1; //Cambia estado de casilla
 	  x = ponerficha('1',i,j,1); //Coloca ficha en tablero lógico
-	  g_print("%d ",x);
+	  //g_print("%d ",x);
 	  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),ImagenTurnoActual); //Cambia imagen del turno actual
 	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 2"); //Cambia texto del turno actual
 	  if ((x==3)||(x==4)) //si se logra una comida
@@ -100,7 +102,7 @@ void Pulsado(GtkWidget *Widget, gpointer data)
 	  gtk_button_set_image(GTK_BUTTON(Widget),imagen); //Cambia imagen de casilla
 	  Widgets->STablero->Estados[i][j]=2; //Cambia estado de casilla
 	  x = ponerficha('2',i,j,1); //Coloca ficha en tablero lógico
-	  g_print("%d ",x);
+	  //g_print("%d ",x);
 	  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),ImagenTurnoActual); //Cambia imagen del turno actual
 	  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[0]), "Turno actual:\nJugador 1"); //Cambia texto del turno actual
 	  if ((x==3)||(x==4)) //si se logra una comida
@@ -180,14 +182,16 @@ void MenuGuardar(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
   int l;
+  GtkFileChooser *chooser;
+  GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+  gint res;
+  GtkWidget *dialog;
+  char *NombreArchivo;
+  char Extension[]=".pte";
+  
   if(Widgets->STablero->Activo!=0)
     {
-      GtkFileChooser *chooser;
-      GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
-      gint res;
-      GtkWidget *dialog;
-      char *NombreArchivo;
-      char Extension[]=".pte";
+
       
       Widgets->SVentanas->VenG= gtk_file_chooser_dialog_new ("Guardar Partida",
 							 GTK_WINDOW(Widgets->SVentanas->VenP),
@@ -256,7 +260,7 @@ void MenuAbrir(GtkWidget *Widget, gpointer data)
 	  int l;
 	  GtkFileChooser *chooser = GTK_FILE_CHOOSER (Widgets->SVentanas->VenA);
 	  NombreArchivo=gtk_file_chooser_get_filename(chooser);
-	  gtk_widget_destroy (Widgets->SVentanas->VenA);
+	  gtk_widget_hide (Widgets->SVentanas->VenA);
 	  l=strlen(NombreArchivo);
 	  if(NombreArchivo[l-1]=='e' && NombreArchivo[l-2]=='t' && NombreArchivo[l-3]=='p' && NombreArchivo[l-4]=='.')
 	    CargarPartida(Widgets, NombreArchivo);
@@ -273,7 +277,7 @@ void MenuAbrir(GtkWidget *Widget, gpointer data)
 	      gtk_widget_destroy(dialog);
 	    }//else
 	}//if
-      gtk_widget_destroy (Widgets->SVentanas->VenA);
+      gtk_widget_hide(Widgets->SVentanas->VenA);
     }//if
   else
     TerminarPartida(Widget,Widgets);
@@ -405,6 +409,7 @@ void IniciarPartida(GtkWidget *Widget, gpointer data)
  Widgets->STablero->Inicia=1;
  Widgets->STablero->Activo=1; //SEGMENTATION AL APRETAR CANCELAR Ó QUIT
  Widgets->STablero->Turno=1;
+ Widgets->STablero->BanderaNext=0;
  Widgets->SOpciones->Jugadores[1]=gtk_entry_get_text(GTK_ENTRY(Widgets->SOpciones->Entry[0])); //guardamos nombre del jugador
  Widgets->SOpciones->Jugadores[2]=gtk_entry_get_text(GTK_ENTRY(Widgets->SOpciones->Entry[1])); //guardamos nombre del jugador
  gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[1]),Widgets->SOpciones->Jugadores[1]);
@@ -455,6 +460,21 @@ void Esconder3(GtkWidget *Widget, gpointer data)
 }//esconder3
 
 /**
+ *Función Esconder4: se encarga de esconder de la pantalla
+ *la ventana que marcar errores del juego.
+ *Regresa destrucción de ventana del ganador.
+ *@Elena
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
+void Esconder4(GtkWidget *Widget, gpointer data)
+{
+  ptrWidgets Widgets=(ptrWidgets)data;
+  gtk_widget_hide(Widgets->SVentanas->VentanaErrorArchivos);
+}//esconder4
+
+
+/**
  *Función Acerca_de: se encarga de mandar en la pantalla
  *Los nombres de los desarrolladores del juego Pente.
  *Regresa ventana con los nombres de los desarrolladores  .
@@ -496,8 +516,9 @@ void CerrarJuego(GtkWidget *Widget, gpointer data)
   if(Widgets->STablero->Activo!=0)
     {
       Decision=DialogoCerrar(Widgets);
-      if(Decision!=-99)
-	gtk_widget_destroy(Widgets->SVentanas->VenP);
+      //if(Decision!=-99)
+      //gtk_widget_destroy(Widgets->SVentanas->VenP);
+      gtk_main_quit();
     }//if
   else
     {
@@ -539,23 +560,151 @@ gboolean CerrarJuego1(GtkWidget *Widget, GdkEvent *event, gpointer data)
 void CerrarJuego2(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
-  if(Widgets->STablero->Activo!=0)
-    fclose(Widgets->STablero->Temporal);
-  free(Widgets->STablero);
-  free(Widgets->SOpciones);
-  free(Widgets->SVentanas);
-  free(Widgets);
   gtk_main_quit();
 }//CerrarJuego2
 
 /**
  *Función RecorreHistorial: se encarga de recorrer todo el juego
  *Regresa el recorrido de todo el historial del juego
- *@
+ *@Elena
  *@Param GtkWidget *Widget El botón apuntador
  *@Param gpointer data  Apuntador a todas las estructuras
  */
 void RecorreHistorial(GtkWidget *Widget, gpointer data)
 {
+  ptrWidgets Widgets=(ptrWidgets)data;
+  GtkWidget *boton, *label, *vbox;
+  PtrMovimiento p;
+  int i, j, x;
+  GtkWidget *imagen, *imagen1, *imagen2;
+  gchar *text3;
 
+  if (Widgets->STablero->BanderaNext==1)
+    {
+      imagen=gtk_image_new();
+      gtk_image_set_from_file(GTK_IMAGE(imagen),"Archivos/0.png");
+      imagen1=gtk_image_new();
+      gtk_image_set_from_file(GTK_IMAGE(imagen1),"Archivos/1.png");
+      imagen2=gtk_image_new();
+      gtk_image_set_from_file(GTK_IMAGE(imagen2),"Archivos/2.png");
+      
+      p=raiz;
+      while (p)
+	{
+	  if(p->num==numerodejugada)
+	    {
+	      x = ponerficha(p->color, p->i, p->j, 0);
+	      for(i=0;i<20;i++) //recorre tableros
+		{
+		  for(j=0;j<20;j++)
+		    {
+		      if ((tablero[i][j]-'0') != (Widgets->STablero->Estados[i][j])) //si tablero lógico es diferente al gráfico
+			{
+			  if (tablero[i][j] == '1')
+			    {
+			      gtk_button_set_image(GTK_BUTTON(Widgets->STablero->B[i][j]),imagen1); //cambia a imagen vacía por haber comido
+			      Widgets->STablero->Estados[i][j]=1; //cambia estado para imagen vacía
+			    }
+			  else if (tablero[i][j] == '2')
+			    {
+			      gtk_button_set_image(GTK_BUTTON(Widgets->STablero->B[i][j]),imagen2); //cambia a imagen vacía por haber comido
+			      Widgets->STablero->Estados[i][j]=2; //cambia estado para imagen vacía
+			    }
+			  else
+			    {
+			      gtk_button_set_image(GTK_BUTTON(Widgets->STablero->B[i][j]),imagen); //cambia a imagen vacía por haber comido
+			      if (Widgets->STablero->Estados[i][j] == 1)
+				{
+				  Widgets->STablero->Num2Comidas++; //aumenta numero de comidas
+				  fprintf(stderr, "Comida2: %d ", Widgets->STablero->Num2Comidas);
+				  //sprintf(text3,"%d",Widgets->STablero->Num1Comidas);
+				  //gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas1), text3); //Cambia texto del turno actual
+				}
+			      else
+				{
+				  Widgets->STablero->Num1Comidas++; //aumenta numero de comidas
+				  fprintf(stderr, "Comida1: %d ", Widgets->STablero->Num1Comidas);
+				  //sprintf(text3,"%d",Widgets->STablero->Num2Comidas);
+				  //gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas2), text3); //Cambia texto del turno actual
+				}
+			    }
+			}
+		    }
+		}
+	      numerodejugada++;
+	      break;
+	    }
+	  else
+	    {
+	      p=p->siguiente;
+	    }
+	}
+      if (p==NULL)
+	{
+	  numerodejugada=1;
+	  Widgets->STablero->Activo=1;
+	  Widgets->STablero->BanderaNext=0;
+	}
+    }
+  else
+    {    
+      vbox= gtk_vbox_new(TRUE,5);
+      Widgets->SVentanas->VentanaErrorArchivos = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+      gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VentanaErrorArchivos), "Error");
+      gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VentanaErrorArchivos), GTK_WIN_POS_CENTER);
+      gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VentanaErrorArchivos), FALSE);
+      gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->VentanaErrorArchivos),5);
+      
+      label= gtk_label_new ("Error: presione \" Open \" o \" Restaurar \" para continuar.");
+      boton=gtk_button_new_from_stock(GTK_STOCK_OK);
+      gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(Esconder4), Widgets);
+      gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->VentanaErrorArchivos),"destroy",GTK_SIGNAL_FUNC(Esconder4), Widgets); 
+      gtk_container_add(GTK_CONTAINER(vbox), label);
+      gtk_container_add(GTK_CONTAINER(vbox), boton);
+      gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VentanaErrorArchivos), vbox);
+      gtk_widget_show_all(Widgets->SVentanas->VentanaErrorArchivos);
+    }
 }//RecorreHistorial
+
+/**
+ *Función SeguirAMano: se encarga de recorrer todo el juego
+ *Regresa el recorrido de todo el historial del juego
+ *@Elena
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
+void SeguirAMano(GtkWidget *Widget, gpointer data)
+{
+  ptrWidgets Widgets=(ptrWidgets)data;
+  GtkWidget *boton, *label, *vbox;
+
+  if (Widgets->STablero->BanderaNext==1)
+    {
+      TruncarLista(numerodejugada);
+      Widgets->STablero->BanderaNext=0;
+      Widgets->STablero->Activo=1;
+      if (numerodejugada%2==0)
+	Widgets->STablero->Turno=2;
+      else
+	Widgets->STablero->Turno=1;
+      numerodejugada=1;
+    }
+  else
+    {    
+      vbox= gtk_vbox_new(TRUE,5);
+      Widgets->SVentanas->VentanaErrorArchivos = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+      gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VentanaErrorArchivos), "Error");
+      gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VentanaErrorArchivos), GTK_WIN_POS_CENTER);
+      gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VentanaErrorArchivos), FALSE);
+      gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->VentanaErrorArchivos),5);
+      
+      label= gtk_label_new ("Error: presione \" Open \" o \" Restaurar \" para continuar.");
+      boton=gtk_button_new_from_stock(GTK_STOCK_OK);
+      gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(Esconder4), Widgets);
+      gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->VentanaErrorArchivos),"destroy",GTK_SIGNAL_FUNC(Esconder4), Widgets); 
+      gtk_container_add(GTK_CONTAINER(vbox), label);
+      gtk_container_add(GTK_CONTAINER(vbox), boton);
+      gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VentanaErrorArchivos), vbox);
+      gtk_widget_show_all(Widgets->SVentanas->VentanaErrorArchivos);
+    }//SeguirAMano
+}

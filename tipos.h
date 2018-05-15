@@ -30,6 +30,7 @@ typedef struct def_Ventanas
   GtkWidget *VenJ;//Ventana jugar
   GtkWidget *VenA;//Ventana Abrir
   GtkWidget *VenG;//Ventana Guardar
+  GtkWidget *VentanaErrorArchivos;
 } tVentanas, *ptrVentanas;
 
 /*******************************************
@@ -51,6 +52,7 @@ typedef struct def_Tablero
   GtkWidget *EJ[3];//Nombres de los jugadores
   FILE *Temporal;//Archivo
   GtkWidget *BotonTurnoActual;
+  int BanderaNext;
 } tTablero, *ptrTablero;
 
 /*******************************************

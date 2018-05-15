@@ -109,7 +109,7 @@ void EliminarLista()
 /**
  *Esta función lee la lista de un archivo 
  *Recibe el nombre del archivo que se desea leer 
- *Regresa el total de jugadas leídas en caso de éxito
+ *Regresa el total de jugadas  en caso de éxito
  *Regresa -1 en caso de error
  *@Mariana 
  *@Param char *NombreArchivo Nombre del archivo el cual da el usuario
@@ -152,7 +152,7 @@ void TruncarLista(int num)
   while(p)
     {
       q=p->siguiente;
-      if (q && (q->num >= num))
+      if (q->num >= num)
 	p->siguiente=NULL;
       if (p->num >= num)
 	{
