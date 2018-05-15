@@ -3,7 +3,7 @@
  *Este programa es el .h de listatablero.c ya que son módulos.
  *Esto significa que incluye la declaraciones de estructuras y 
  *todas las funciones que no son static de listatablero.h
- *Se hizo lo de indef y endif (es un if) para que si ya se declaro esta 
+ *Se hizo lo de indef y endif (es un if) para que si ya se declaró esta 
  *biblioteca, no se vuelva a declarar y haya problemas en el código
  *@Mariana
  *@01/05/2018
