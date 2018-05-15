@@ -302,10 +302,6 @@ void MenuAbrir(GtkWidget *Widget, gpointer data)
     gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VentanaErrorArchivos), vbox);
     gtk_widget_show_all(Widgets->SVentanas->VentanaErrorArchivos);
   }
-
-
-
-
     //gtk_main_quit();
     //TerminarPartida(Widget,Widgets);
 }//MenuAbrir
@@ -331,12 +327,10 @@ void Manual(GtkWidget *Widget,gpointer data)
   gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VenAy), "Ayuda");
   gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenAy), GTK_WIN_POS_CENTER);
   gtk_window_set_default_size(GTK_WINDOW(Widgets->SVentanas->VenAy),500,500);
-  //gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VenAy), FALSE);
   gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->VenAy),5);
 
   pixbuf = gdk_pixbuf_new_from_file_at_scale("Archivos/instruccionessinpresionar.png", 500, 500, FALSE, NULL);
   imagen = gtk_image_new_from_pixbuf(pixbuf); 
-  //gtk_widget_show (imagen);
 
   gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VenAy), imagen);  
   gtk_widget_show_all(Widgets->SVentanas->VenAy);
@@ -637,7 +631,7 @@ void RecorreHistorial(GtkWidget *Widget, gpointer data)
   PtrMovimiento p;
   int i, j, x;
   GtkWidget *imagen, *imagen1, *imagen2;
-  gchar *text3;
+  char text3[3];
 
   if (Widgets->STablero->BanderaNext==1)
     {
@@ -673,19 +667,19 @@ void RecorreHistorial(GtkWidget *Widget, gpointer data)
 			  else
 			    {
 			      gtk_button_set_image(GTK_BUTTON(Widgets->STablero->B[i][j]),imagen); //cambia a imagen vacía por haber comido
-			      Widgets->STablero->Estados[i][j]=0;
 			      if (Widgets->STablero->Estados[i][j] == 1)
 				{
 				  Widgets->STablero->Num2Comidas++; //aumenta numero de comidas
-				  //sprintf(text3,"%d",Widgets->STablero->Num1Comidas);
-				  //gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas1), text3); //Cambia texto del turno actual
+				  sprintf(text3,"%d",Widgets->STablero->Num2Comidas);
+				  gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas2), text3); //Cambia texto del turno actual
 				}
 			      else
 				{
 				  Widgets->STablero->Num1Comidas++; //aumenta numero de comidas
-				  //sprintf(text3,"%d",Widgets->STablero->Num2Comidas);
-				  //gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas2), text3); //Cambia texto del turno actual
+				  sprintf(text3,"%d",Widgets->STablero->Num1Comidas);
+				  gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas1), text3); //Cambia texto del turno actual
 				}
+			      Widgets->STablero->Estados[i][j]=0;
 			    }
 			}
 		    }
@@ -700,9 +694,14 @@ void RecorreHistorial(GtkWidget *Widget, gpointer data)
 	}
       if (p==NULL)
 	{
+	  SeguirAMano(NULL, Widgets);
+	  /*if ((numerodejugada%2)==0)
+	    Widgets->STablero->Turno=2;
+	  else
+	    Widgets->STablero->Turno=1;
 	  numerodejugada=1;
 	  Widgets->STablero->Activo=1;
-	  Widgets->STablero->BanderaNext=0;
+	  Widgets->STablero->BanderaNext=0;*/
 	}
     }
   else
@@ -736,17 +735,36 @@ void SeguirAMano(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
   GtkWidget *boton, *label, *vbox;
-
+  GtkWidget *imagen1, *imagen2;
+  char text3 [3];
   if (Widgets->STablero->BanderaNext==1)
     {
+      imagen1=gtk_image_new();
+      gtk_image_set_from_file(GTK_IMAGE(imagen1),"Archivos/1.png");
+      imagen2=gtk_image_new();
+      gtk_image_set_from_file(GTK_IMAGE(imagen2),"Archivos/2.png");
+      
       TruncarLista(numerodejugada);
       Widgets->STablero->BanderaNext=0;
       Widgets->STablero->Activo=1;
-      if (numerodejugada%2==0)
+      if ((numerodejugada%2)==0)
 	Widgets->STablero->Turno=2;
       else
 	Widgets->STablero->Turno=1;
       numerodejugada=1;
+      
+      if (Widgets->STablero->Turno==1)
+	{
+	  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),imagen1); //Cambia imagen de casilla
+	}
+      else if (Widgets->STablero->Turno==2)
+	{
+	  gtk_button_set_image(GTK_BUTTON(Widgets->STablero->BotonTurnoActual),imagen2); //Cambia imagen de casilla
+	}
+      sprintf(text3,"%d",Widgets->STablero->Num1Comidas);
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas1), text3); //Cambia texto del turno actual
+      sprintf(text3,"%d",Widgets->STablero->Num2Comidas);
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas2), text3); //Cambia texto del turno actual
     }
   else
     {    

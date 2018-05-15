@@ -10,7 +10,7 @@
  *@01/05/2018
 **/
 
-#indef ventanasDEFINIDO
+#ifndef ventanasDEFINIDO
 
 
 void VentanaPrincipal(GtkWidget *widget, gpointer data);

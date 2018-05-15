@@ -10,7 +10,7 @@
  *@01/05/2018
 **/
 
-#indef senalesDEFINIDO
+#ifndef senalesDEFINIDO
 
 void Pulsado(GtkWidget *Widget, gpointer data);
 void Abrir_menu_juego (GtkToolButton *toolbutton, gpointer data);

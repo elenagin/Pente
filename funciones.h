@@ -10,7 +10,7 @@
  *@01/05/2018
 **/
 
-#indef funcionesDEFINIDO
+#ifndef funcionesDEFINIDO
 
 void CargarPartida(ptrWidgets Widgets, char *NombreArchivo);
 void GuardarPartida(ptrWidgets Widgets, char *NombreArchivo);
