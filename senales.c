@@ -1,10 +1,11 @@
 /**
-* @file senales.c *
+* @file senales.c
 * @brief Este programa permite capturar las señales que recibe el 
 * programa gráfico y realiza las funciones necesarias para lo que
 * piden dichos widgets gráficos.
 * @author Karina Almazán, Elena Ginebra
-* @date 01/05/2018 */
+* @date 01/05/2018 
+*/
 
 /**
  *ARCHIVOS DE INCLUSIÓN*/
@@ -236,7 +237,7 @@ void MenuGuardar(GtkWidget *Widget, gpointer data)
 /**
  *Función MenuAbrir:  se encarga de mandar en la
  *pantalla, la ventana del menu para cargar una partida
- *guardar.
+ *guardada.
  *Regresa ventana del menu del juego
  *@Karina
  *@Param GtkWidget *Widget El botón seleccionado del menú
@@ -434,7 +435,7 @@ void IniciarPartida(GtkWidget *Widget, gpointer data)
  limpiartablero();
  EliminarLista();
  Widgets->STablero->Inicia=1;
- Widgets->STablero->Activo=1; //SEGMENTATION AL APRETAR CANCELAR Ó QUIT
+ Widgets->STablero->Activo=1;
  Widgets->STablero->Turno=1;
  Widgets->STablero->BanderaNext=0;
  Widgets->SOpciones->Jugadores[1]=gtk_entry_get_text(GTK_ENTRY(Widgets->SOpciones->Entry[0])); //guardamos nombre del jugador
@@ -547,7 +548,7 @@ void Acerca_de(GtkWidget *Widget, gpointer data)
   gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(SVentanas->VenAd), Nombres);
   gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(SVentanas->VenAd),"(c) Universidad IberoAmericana");
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(SVentanas->VenAd), 
-				"PENTE es la aplicacion que te permite jugar el juego de manera electronica");
+				"PENTE el juego más divertido que puedes jugar en tu computadora.");
   gtk_about_dialog_set_logo(GTK_ABOUT_DIALOG(SVentanas->VenAd), pixbuf);
   g_object_unref(pixbuf), pixbuf = NULL;
   gtk_window_set_position(GTK_WINDOW(SVentanas->VenAd),GTK_WIN_POS_CENTER);

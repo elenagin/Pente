@@ -1,16 +1,11 @@
-/*****************************************************************
- *
- * Archivo:	ventanas.c
- * Autores:
- * Descripcion: Codigo Fuente para implementar el programa
- *		        de Pente en base a funciones de GTK+
- *              desarrollando un ambiente grafico para que los
- *              usuarios puedan jugar
- * Uso: Iniciar el programa, abrir el menu, agregar Widgets
- *      inicializar el ambiente.
- * Fecha:
- *
- ****************************************************************/
+/**
+ *@ventanas.c
+ *Codigo Fuente para implementar el funcionamiento de las ventanas 
+ *principales del juego así como su relación y orden. Además inicia
+ *el ambiente gráfico e interactivo para los jugadores.
+ *@Elena
+ *@09/05/2018
+ */
 
 /*Archivos de Inclusion*/
 #include <gtk/gtk.h>
@@ -22,15 +17,15 @@
 #include "tablerocodigo.h"
 #include "listatablero.h"
 
-/****************************************************
- * Funcion VentanaPrincipal:Se establecen todos los *
- * widgets para poder abrir la ventana principal    *
- * para empezar a jugar el juego de pente.          *
- *                                                  *
- *  Retorno:                                        *
- *  Ventana en Pantalla                             *
- ****************************************************/ 
-
+/**
+ *Función VentanaPrincipal: Se establecen todos los 
+ * widgets para poder abrir la ventana principal
+ * para empezar a jugar el juego de pente.
+ * Regresa ventana en pantalla.
+ *@Karina, @Elena
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void VentanaPrincipal(GtkWidget *widget, gpointer data)
 {
   /*Variables a utilizar*/
@@ -55,7 +50,7 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
 
   //Ventana
   Widgets->SVentanas->VenP=gtk_window_new(GTK_WINDOW_TOPLEVEL);//Creamos ventana principal, esta se encuentra en una estructura
-  gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VenP),FALSE);//fijamos atributo de la ventana 
+  gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VenP),FALSE);//fijamos tamaño de la ventana 
   gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenP),GTK_WIN_POS_CENTER);//fijamos posicion de la ventana
   gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VenP), "Pente");
   g_signal_connect(Widgets->SVentanas->VenP,"delete_event",G_CALLBACK(CerrarJuego1), Widgets);
@@ -195,14 +190,15 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
 }//VentanaPrincipal
 
 
-/****************************************************
- * Funcion VentanaJuego:Se establecen todos los     *
- * widgets para poder abrir ventana de juego        *
- * para empezar a jugar el juego de pente.          *
- *                                                  *
- *  Retorno:                                        *
- *  Ventana en Pantalla                             *
- ****************************************************/ 
+/**
+ *Función VentanaJuego: Se establecen todos los 
+ * widgets para poder abrir la ventana de juego
+ * para empezar a jugar el juego de pente.
+ * Regresa ventana en pantalla.
+ *@Karina, @Elena
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void VentanaJuego(ptrWidgets Widgets)
 {
 
@@ -256,15 +252,14 @@ void VentanaJuego(ptrWidgets Widgets)
 }//VentanaJuego
 
 
-
-/****************************************************
- * Funcion VentanaBienvenida:Se establecen todos lo *
- * widgets para poder abrir ventana de Bienvenida   *
- * para empezar a jugar el juego de pente.          *
- *                                                  *
- *  Retorno:                                        *
- *  Ventana en Pantalla                             *
- ****************************************************/
+/**
+ *Función VentanaBienvenida: Se establecen todos los 
+ * requerimientos para poder abrir la ventana de bienvenida
+ * desde una imagen e introducir el juego de pente.
+ * Regresa ventana en pantalla.
+ *@Elena
+ *@Param Widgets Apuntador a todas las estructuras
+ */
 void VentanaBienvenida(ptrWidgets Widgets)
 {
   GtkWidget *imagen, *boton, *vbox;
@@ -294,6 +289,15 @@ void VentanaBienvenida(ptrWidgets Widgets)
 
 }//VentanaBienvenida
 
+/**
+ * Función VentanaInstrucciones: Se establecen todos los 
+ * requerimientos para poder abrir la ventana de instrucciones
+ * desde una imagen e introducir el juego de pente.
+ * Regresa ventana en pantalla.
+ *@Elena
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
 void VentanaInstrucciones(GtkWidget *widget, gpointer data)
 {
   GtkWidget *imagen, *boton, *vbox;
@@ -325,6 +329,14 @@ void VentanaInstrucciones(GtkWidget *widget, gpointer data)
   gtk_widget_show_all(Widgets->SVentanas->VenI);
 }//VentanaInstrucciones
 
+/**
+ * Función VentanaGanador: Se establecen todos los 
+ * requerimientos para poder abrir la ventana de ganador
+ * que lleva al término del juego de pente.
+ * Regresa ventana en pantalla.
+ * @Elena
+ * @Param ptrWidgets  Apuntador a todas las estructuras
+ */
 void VentanaGanador(ptrWidgets Widgets)
 {
   GtkWidget *boton, *vbox, *label;
@@ -355,6 +367,14 @@ void VentanaGanador(ptrWidgets Widgets)
   gtk_widget_show_all(Widgets->SVentanas->VenGan);
 }
 
+/**
+ * Función VentanaEmpate: Se establecen todos los 
+ * requerimientos para poder abrir la ventana de empate
+ * que lleva al término del juego de pente.
+ * Regresa ventana en pantalla.
+ * @Elena
+ * @Param ptrWidgets  Apuntador a todas las estructuras
+ */
 void VentanaEmpate(ptrWidgets Widgets)
 {
   GtkWidget *boton, *vbox, *label;
