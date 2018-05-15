@@ -1,3 +1,13 @@
+/**
+* @file funciones.c
+* @brief Este programa tiene tres funciones, una inicializa 
+* el tablero cuando se abre una jugada pasada, otra guarda 
+* la jugada y la otra abre una ventana de diálogo cuando se 
+* pica el botón de quit.
+* @author Karina Almazán, Elena Ginebra
+* @date 01/05/2018 
+*/
+
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,15 +20,16 @@
 #include "listatablero.h"
 #include "tablerocodigo.h"
 
-/********************************************************
- * Funcion CargarPartida: Se carga el historial de una  *
- * partida de un juego previamente guardado, manteniendo*
- * todos los cambios del juego,en cuestion de posiciones*
- * marcadas por cada jugador                            *
- *                                                      *
- *  Retorno:                                            *
- *  Partida guardada en Pantalla del juego              *
- ********************************************************/
+/**
+ *Función CargarPartida: Se carga el historial de una  
+ * partida de un juego previamente guardado, manteniendo
+ * todos los cambios del juego,en cuestion de posiciones
+ * marcadas por cada jugador. También limpia el teclado.
+ *@Elena
+ *@Param ptrWidget Widgets  Pointer a estructura para saber
+ * turno 
+ *@Param char *NombreArchivo  Nombre del archivo que se desea abrir
+ */
 void CargarPartida(ptrWidgets Widgets, char *NombreArchivo)
 {
   Widgets->STablero->BanderaNext=1;
@@ -31,16 +42,16 @@ void CargarPartida(ptrWidgets Widgets, char *NombreArchivo)
 }//CargarPartida
 
 
-/********************************************************
- * Funcion GuardarPartida: Se encarga de guardar el     *
- * historial de una partida de un juego, manteniendo    *
- * todos los cambios realizados,en cuestion de posiciones*
- * marcadas por cada jugador                            *
- *                                                      *
- *  Retorno:                                            *
- *  Partida guardada en un archivo tipo ".pte"          *
- ********************************************************/
-
+/**
+ *Función GuardarPartida:  Se encarga de guardar el     
+ * historial de una partida de un juego, manteniendo    
+ * todos los cambios realizados,en cuestion de posiciones
+ * marcadas por cada jugador  
+ *@Elena
+ *@Param ptrWidget Widgets  
+ *@Param char *NombreArchivo  Nombre del archivo que se 
+ * desea guardar, será tipo ".pte"
+ */
 void GuardarPartida(ptrWidgets Widgets, char *NombreArchivo)
 {
   GuardarLista(NombreArchivo);
@@ -49,15 +60,20 @@ void GuardarPartida(ptrWidgets Widgets, char *NombreArchivo)
 
 
 /********************************************************
- *Funcion DialogoCerrar:se encarga de mandar en pantalla*
- * una ventana, para preguntar al jugador si desea      *
- * guardar la partida, dependiendo la desicion, se      *
- * ejecuta la opcion guardar partida, o se cierra el    *
- * juego si no se desea guardar.                        *
+ *Funcion DialogoCerrar:.                        *
  *                                                      *
  *  Retorno:                                            *
  *  ventana de opcion guardar o no guardar partida      *
  ********************************************************/
+/**
+ *Función DialogoCerrar:  Se encarga de mandar en pantalla
+ * una ventana, para preguntar al jugador si desea      
+ * guardar la partida, dependiendo la desicion, se      
+ * ejecuta la opcion guardar partida, o se cierra el    
+ * juego si no se desea guardar.
+ *@Karina
+ *@Param ptrWidget Widgets  
+ */
 gboolean DialogoCerrar(ptrWidgets Widgets)
 {
   gboolean Decision;
