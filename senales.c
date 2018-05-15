@@ -308,8 +308,6 @@ void MenuAbrir(GtkWidget *Widget, gpointer data)
     gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VentanaErrorArchivos), vbox);
     gtk_widget_show_all(Widgets->SVentanas->VentanaErrorArchivos);
   }
-  //gtk_main_quit();
-  //TerminarPartida(Widget,Widgets);
 }//MenuAbrir
 
 
@@ -672,7 +670,7 @@ void RecorreHistorial(GtkWidget *Widget, gpointer data)
 			{
 			  if ((tablero[i2][j2]-'0') != (Widgets->STablero->Estados[i2][j2])) //si tablero lógico es diferente al gráfico
 			    {
-			      gtk_button_set_image(GTK_BUTTON(Widgets->STablero->B[i2][j2]),imagen2); //cambia a imagen vacía por haber comido
+			      gtk_button_set_image(GTK_BUTTON(Widgets->STablero->B[i2][j2]),imagen2);//cambia a imagen vacía por haber comido
 			      Widgets->STablero->Estados[i2][j2]=0; //cambia estado para imagen vacía
 			      Widgets->STablero->Num1Comidas++; //aumenta numero de comidas
 			      sprintf(text3,"%d",Widgets->STablero->Num1Comidas);
@@ -701,16 +699,7 @@ void RecorreHistorial(GtkWidget *Widget, gpointer data)
 	    }
 	}
       if (p==NULL)
-	{
 	  SeguirAMano(NULL, Widgets);
-	  /*if ((numerodejugada%2)==0)
-	    Widgets->STablero->Turno=2;
-	    else
-	    Widgets->STablero->Turno=1;
-	    numerodejugada=1;
-	    Widgets->STablero->Activo=1;
-	    Widgets->STablero->BanderaNext=0;*/
-	}
     }
   else
     {    
@@ -733,7 +722,7 @@ void RecorreHistorial(GtkWidget *Widget, gpointer data)
 }//RecorreHistorial
 
 /**
- *Función SeguirAMano: se encarga de recorrer todo el juego
+ *Función SeguirAMano: se encarga de recorrer toda la lista del juego
  *Regresa el recorrido de todo el historial del juego
  *@Elena
  *@Param GtkWidget *Widget El botón apuntador
