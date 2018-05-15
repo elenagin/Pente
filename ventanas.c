@@ -39,8 +39,8 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
   gchar NombreBoton[6];
   GtkWidget *MenuB,*MenuI1,*MenuI2,*Menu1,*Menu2,*MenuIJ,*MenuIG,*MenuIR,*MenuIT,*MenuIM,*MenuIAd;
   GtkWidget *Tool;
-  GtkToolItem *TJ, *TG, *TA, *Sep1, *TAy, *TAd, *Sep2;
-  GtkToolItem *TS, *ToolNext, *ToolStop, *Separador3;
+  GtkToolItem *ToolJugar, *ToolGuardar, *ToolAbrir, *Separador1, *ToolAyuda, *ToolAcercaDe, *Separador2;
+  GtkToolItem *ToolSalir, *ToolNext, *ToolStop, *Separador3;
   GtkWidget *Tabla;
   GdkColor Tablero={0, 0xe000, 0xe000, 0xe000};/*Declara un color*/
   GtkWidget *CHPartida[3], *IVenB, *Im2, *ImagenTurnoActual;
@@ -97,41 +97,41 @@ void VentanaPrincipal(GtkWidget *widget, gpointer data)
   
   //Barra de accesos directos
   Tool=gtk_toolbar_new();//definimos tool bar
-  TJ=gtk_tool_button_new_from_stock(GTK_STOCK_MEDIA_PLAY);//creacion de icono de jugar
-  g_signal_connect(TJ,"clicked",G_CALLBACK(Abrir_menu_juego),Widgets);//llamada a la funcion para abrir juego
-  TG=gtk_tool_button_new_from_stock(GTK_STOCK_SAVE);//creacion de icono guardar
-  g_signal_connect(TG,"clicked",G_CALLBACK(MenuGuardar),Widgets);//llamada a la funcion para guardar juego
-  TA=gtk_tool_button_new_from_stock(GTK_STOCK_OPEN);//creacion de icono abrir
-  gtk_widget_set_name(GTK_WIDGET(TA),"Abrir");//Damos nombre al icono anterior
-  g_signal_connect(TA,"clicked",G_CALLBACK(MenuAbrir),Widgets);//llamada a la funcion para abrir juego
-  Sep1=gtk_separator_tool_item_new();//creamos separador
-  TAy=gtk_tool_button_new_from_stock(GTK_STOCK_HELP);//creacion del boton ayuda
-  g_signal_connect(TAy,"clicked",G_CALLBACK(Manual),Widgets);//llamada a la funcion Manual
-  TAd=gtk_tool_button_new_from_stock(GTK_STOCK_ABOUT);//creacion del icono acerca de
-  g_signal_connect(TAd,"clicked",G_CALLBACK(Acerca_de),Widgets->SVentanas);//llamada a la funcion Acerca de
-  Sep2=gtk_separator_tool_item_new();//creamos un segundo separador
+  ToolJugar=gtk_tool_button_new_from_stock(GTK_STOCK_MEDIA_PLAY);//creacion de icono de jugar
+  g_signal_connect(ToolJugar,"clicked",G_CALLBACK(Abrir_menu_juego),Widgets);//llamada a la funcion para abrir juego
+  ToolGuardar=gtk_tool_button_new_from_stock(GTK_STOCK_SAVE);//creacion de icono guardar
+  g_signal_connect(ToolGuardar,"clicked",G_CALLBACK(MenuGuardar),Widgets);//llamada a la funcion para guardar juego
+  ToolAbrir=gtk_tool_button_new_from_stock(GTK_STOCK_OPEN);//creacion de icono abrir
+  gtk_widget_set_name(GTK_WIDGET(ToolAbrir),"Abrir");//Damos nombre al icono anterior
+  g_signal_connect(ToolAbrir,"clicked",G_CALLBACK(MenuAbrir),Widgets);//llamada a la funcion para abrir juego
+  Separador1=gtk_separator_tool_item_new();//creamos separador
+  ToolAyuda=gtk_tool_button_new_from_stock(GTK_STOCK_HELP);//creacion del boton ayuda
+  g_signal_connect(ToolAyuda,"clicked",G_CALLBACK(Manual),Widgets);//llamada a la funcion Manual
+  ToolAcercaDe=gtk_tool_button_new_from_stock(GTK_STOCK_ABOUT);//creacion del icono acerca de
+  g_signal_connect(ToolAcercaDe,"clicked",G_CALLBACK(Acerca_de),Widgets->SVentanas);//llamada a la funcion Acerca de
+  Separador2=gtk_separator_tool_item_new();//creamos un segundo separador
   ToolNext=gtk_tool_button_new_from_stock(GTK_STOCK_MEDIA_NEXT);//creación del icono salir
   g_signal_connect(ToolNext,"clicked",G_CALLBACK(RecorreHistorial),Widgets);//llamada a la funcion Salir
   ToolStop=gtk_tool_button_new_from_stock(GTK_STOCK_MEDIA_STOP);//creación del icono salir
   g_signal_connect(ToolStop,"clicked",G_CALLBACK(SeguirAMano),Widgets);//llamada a la funcion Salir
   Separador3=gtk_separator_tool_item_new();//creamos un tercer separador
-  TS=gtk_tool_button_new_from_stock(GTK_STOCK_QUIT);//cracion del icono salir
-  g_signal_connect(TS,"clicked",G_CALLBACK(CerrarJuego),Widgets);//llamada a la funcion Salir
+  ToolSalir=gtk_tool_button_new_from_stock(GTK_STOCK_QUIT);//cracion del icono salir
+  g_signal_connect(ToolSalir,"clicked",G_CALLBACK(CerrarJuego),Widgets);//llamada a la funcion Salir
 
   
   /*Definimos la jerarquia para meter los iconos en la TOOLBAR*/
   gtk_toolbar_set_style(GTK_TOOLBAR(Tool), GTK_TOOLBAR_BOTH);
-  gtk_toolbar_insert(GTK_TOOLBAR(Tool), TJ, -1);
-  gtk_toolbar_insert(GTK_TOOLBAR(Tool), TG, -1);
-  gtk_toolbar_insert(GTK_TOOLBAR(Tool), TA, -1);
-  gtk_toolbar_insert(GTK_TOOLBAR(Tool), Sep1, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), ToolJugar, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), ToolGuardar, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), ToolAbrir, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), Separador1, -1);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), ToolNext, -1);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), ToolStop, -1);
-  gtk_toolbar_insert(GTK_TOOLBAR(Tool), Sep2, -1);
-  gtk_toolbar_insert(GTK_TOOLBAR(Tool), TAy, -1);
-  gtk_toolbar_insert(GTK_TOOLBAR(Tool), TAd, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), Separador2, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), ToolAyuda, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), ToolAcercaDe, -1);
   gtk_toolbar_insert(GTK_TOOLBAR(Tool), Separador3, -1);
-  gtk_toolbar_insert(GTK_TOOLBAR(Tool), TS, -1);
+  gtk_toolbar_insert(GTK_TOOLBAR(Tool), ToolSalir, -1);
   gtk_box_pack_start (GTK_BOX(CV),Tool,FALSE,TRUE,0);//incluimos la toolbar en la caja vertical
   
   //Tablero de juego e inicializacion de datos
