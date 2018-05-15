@@ -69,7 +69,7 @@ gboolean DialogoCerrar(ptrWidgets Widgets)
   gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->Des1),GTK_WIN_POS_CENTER);
   gtk_window_set_title(GTK_WINDOW(Widgets->SVentanas->Des1), "Partida en marcha");
   Decision=gtk_dialog_run(GTK_DIALOG(Widgets->SVentanas->Des1));
-  gtk_widget_destroy(Widgets->SVentanas->Des1);
+  gtk_widget_hide(Widgets->SVentanas->Des1);
   if(Decision==GTK_RESPONSE_YES)
     {
       MenuGuardar(Widgets->SVentanas->VenP,Widgets);

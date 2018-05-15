@@ -31,6 +31,7 @@ typedef struct def_Ventanas
   GtkWidget *VenA;//Ventana Abrir
   GtkWidget *VenG;//Ventana Guardar
   GtkWidget *VentanaErrorArchivos;
+  GtkWidget *VentanaEmpate;
 } tVentanas, *ptrVentanas;
 
 /*******************************************

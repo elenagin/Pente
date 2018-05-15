@@ -87,6 +87,11 @@ void Pulsado(GtkWidget *Widget, gpointer data)
 	      VentanaGanador(Widgets); //abre ventana de ganador para posteriormente terminar partida
 	      return;
 	    }
+	  if (x==-4)
+	    {
+	      VentanaEmpate(Widgets);
+	      return;
+	    }
 	  Widgets->STablero->Turno=2;
         }
       else if (Widgets->STablero->Turno==2)
@@ -141,7 +146,7 @@ void Pulsado(GtkWidget *Widget, gpointer data)
       if (Widgets->STablero->Estados[i][j]!=0)
 	label= gtk_label_new ("Error: Casilla ocupada.");
       if (Widgets->STablero->Activo==0)
-	label= gtk_label_new ("Error: para empezar a jugar\npresione botón \" Play \" o \" Jugar \".");
+	label= gtk_label_new ("Error: para empezar a jugar\npresione botón \" Play \" o \" Jugar \"\n\nSi presionó el botón para abrir desde un archivo,\n no podrá empezar a jugar hasta presionar\n \" Stop \" o llegar a máximo de movimientos\n (jugadas) de la partida cargada.");
       boton=gtk_button_new_from_stock(GTK_STOCK_OK);
       gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(Esconder2), Widgets);
       gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->Error),"destroy",GTK_SIGNAL_FUNC(Esconder2), Widgets); 
@@ -212,7 +217,7 @@ void MenuGuardar(GtkWidget *Widget, gpointer data)
 	    strcat(NombreArchivo,Extension);
 	  GuardarPartida(Widgets,NombreArchivo);
 	}//if
-      gtk_widget_destroy (Widgets->SVentanas->VenG);
+      gtk_widget_hide (Widgets->SVentanas->VenG); //cambie esto
     }//if
   else
     {
@@ -240,6 +245,7 @@ void MenuGuardar(GtkWidget *Widget, gpointer data)
 void MenuAbrir(GtkWidget *Widget, gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
+  GtkWidget *boton, *label, *vbox;
   if(Widgets->STablero->Activo==0)
     {
       GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
@@ -279,8 +285,29 @@ void MenuAbrir(GtkWidget *Widget, gpointer data)
 	}//if
       gtk_widget_hide(Widgets->SVentanas->VenA);
     }//if
-  else
-    TerminarPartida(Widget,Widgets);
+  else{
+    vbox= gtk_vbox_new(TRUE,5);
+    Widgets->SVentanas->VentanaErrorArchivos = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VentanaErrorArchivos), "Error");
+    gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VentanaErrorArchivos), GTK_WIN_POS_CENTER);
+    gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VentanaErrorArchivos), FALSE);
+    gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->VentanaErrorArchivos),5);
+      
+    label= gtk_label_new ("Error: juego en partida, termine partida\n o guarde y termine su juego para continuar.");
+    boton=gtk_button_new_from_stock(GTK_STOCK_OK);
+    gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(Esconder4), Widgets);
+    gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->VentanaErrorArchivos),"destroy",GTK_SIGNAL_FUNC(Esconder4), Widgets); 
+    gtk_container_add(GTK_CONTAINER(vbox), label);
+    gtk_container_add(GTK_CONTAINER(vbox), boton);
+    gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VentanaErrorArchivos), vbox);
+    gtk_widget_show_all(Widgets->SVentanas->VentanaErrorArchivos);
+  }
+
+
+
+
+    //gtk_main_quit();
+    //TerminarPartida(Widget,Widgets);
 }//MenuAbrir
 
 
@@ -297,7 +324,6 @@ void Manual(GtkWidget *Widget,gpointer data)
 {
   ptrWidgets Widgets=(ptrWidgets)data;
   GdkPixbuf *pixbuf;
-  GtkWidget *picture;
   GtkWidget *imagen, *boton, *vbox;
   
   /* Create a Window. */
@@ -305,12 +331,12 @@ void Manual(GtkWidget *Widget,gpointer data)
   gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VenAy), "Ayuda");
   gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VenAy), GTK_WIN_POS_CENTER);
   gtk_window_set_default_size(GTK_WINDOW(Widgets->SVentanas->VenAy),500,500);
-  gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VenAy), FALSE);
+  //gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VenAy), FALSE);
   gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->VenAy),5);
 
-  pixbuf = gdk_pixbuf_new_from_file_at_scale("Archivos/instrucciones.png", 500, 500, FALSE, NULL);
+  pixbuf = gdk_pixbuf_new_from_file_at_scale("Archivos/instruccionessinpresionar.png", 500, 500, FALSE, NULL);
   imagen = gtk_image_new_from_pixbuf(pixbuf); 
-  gtk_widget_show (imagen);
+  //gtk_widget_show (imagen);
 
   gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VenAy), imagen);  
   gtk_widget_show_all(Widgets->SVentanas->VenAy);
@@ -360,7 +386,7 @@ void TerminarPartida(GtkWidget *Widget, gpointer data)
 	MenuGuardar(Dialog2,Widgets);
       Widgets->STablero->Activo=0;
       Widgets->STablero->Turno=0;
-      Tabla=gtk_table_new(20,20,TRUE);//creacion de tabla
+      /*Tabla=gtk_table_new(20,20,TRUE);//creacion de tabla
       imagen=gtk_image_new();
       gtk_image_set_from_file(GTK_IMAGE(imagen),"Archivos/0.png");
       for(i=0;i<20;i++)
@@ -382,11 +408,18 @@ void TerminarPartida(GtkWidget *Widget, gpointer data)
       gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[1]),"Jugador1");
       gtk_label_set_text(GTK_LABEL(Widgets->STablero->EJ[2]),"Jugador2");
       gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas1),"00");
-      gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas2),"00");
-      if((strcasecmp(gtk_widget_get_name(Widget),"Abrir"))==0)
-	MenuAbrir(Dialog2,Widgets);
-      limpiartablero();
-      EliminarLista();
+      gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas2),"00");*/
+      /*if((strcasecmp(gtk_widget_get_name(Widget),"Abrir"))==0)
+	{
+	  MenuAbrir(Dialog2,Widgets);
+	  //gtk_widget_hide(Widgets->SVentanas->VenP);
+	  limpiartablero();
+	  EliminarLista();
+	  } else{*/
+	gtk_widget_hide(Widgets->SVentanas->VenP);
+	limpiartablero();
+	EliminarLista();
+	gtk_main_quit();
     }//if
 }//TerminarPartida
 
@@ -462,7 +495,7 @@ void Esconder3(GtkWidget *Widget, gpointer data)
 /**
  *Función Esconder4: se encarga de esconder de la pantalla
  *la ventana que marcar errores del juego.
- *Regresa destrucción de ventana del ganador.
+ *Regresa destrucción de ventana de error.
  *@Elena
  *@Param GtkWidget *Widget El botón apuntador
  *@Param gpointer data  Apuntador a todas las estructuras
@@ -472,6 +505,33 @@ void Esconder4(GtkWidget *Widget, gpointer data)
   ptrWidgets Widgets=(ptrWidgets)data;
   gtk_widget_hide(Widgets->SVentanas->VentanaErrorArchivos);
 }//esconder4
+
+/**
+ *Función Esconder5: se encarga de esconder de la pantalla
+ *la ventana que marcar un empate en el juego.
+ *Regresa destrucción de ventana empate.
+ *@Elena
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
+void Esconder5(GtkWidget *Widget, gpointer data)
+{
+  ptrWidgets Widgets=(ptrWidgets)data;
+  gtk_widget_hide(Widgets->SVentanas->VentanaEmpate);
+}//esconder5
+
+/**
+ *Función EsconderVentana: se encarga de esconder de la pantalla
+ *la ventana que marcar un empate en el juego.
+ *Regresa destrucción de ventana.
+ *@Elena
+ *@Param GtkWidget *Widget El botón apuntador
+ *@Param gpointer data  Apuntador a todas las estructuras
+ */
+void EsconderVentana(GtkWidget *Widget, gpointer data)
+{
+  gtk_widget_hide(Widget);
+}//esconderventana
 
 
 /**
@@ -485,7 +545,7 @@ void Esconder4(GtkWidget *Widget, gpointer data)
 void Acerca_de(GtkWidget *Widget, gpointer data)
 {
   ptrVentanas SVentanas=(ptrVentanas)data;
-  GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file("Archivos/logo_peque.png", NULL);
+  GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file("Archivos/logosinpresionar.png", NULL);
   const gchar *Nombres[100]={"Mariana Martinez Kobeh","Elena Ginebra","Karina Almazán"};
   SVentanas->VenAd=gtk_about_dialog_new();
   gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(SVentanas->VenAd), "PENTE");
@@ -516,8 +576,8 @@ void CerrarJuego(GtkWidget *Widget, gpointer data)
   if(Widgets->STablero->Activo!=0)
     {
       Decision=DialogoCerrar(Widgets);
-      //if(Decision!=-99)
-      //gtk_widget_destroy(Widgets->SVentanas->VenP);
+      if(Decision!=-99)
+	gtk_widget_hide(Widgets->SVentanas->VenP);
       gtk_main_quit();
     }//if
   else
@@ -613,17 +673,16 @@ void RecorreHistorial(GtkWidget *Widget, gpointer data)
 			  else
 			    {
 			      gtk_button_set_image(GTK_BUTTON(Widgets->STablero->B[i][j]),imagen); //cambia a imagen vacía por haber comido
+			      Widgets->STablero->Estados[i][j]=0;
 			      if (Widgets->STablero->Estados[i][j] == 1)
 				{
 				  Widgets->STablero->Num2Comidas++; //aumenta numero de comidas
-				  fprintf(stderr, "Comida2: %d ", Widgets->STablero->Num2Comidas);
 				  //sprintf(text3,"%d",Widgets->STablero->Num1Comidas);
 				  //gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas1), text3); //Cambia texto del turno actual
 				}
 			      else
 				{
 				  Widgets->STablero->Num1Comidas++; //aumenta numero de comidas
-				  fprintf(stderr, "Comida1: %d ", Widgets->STablero->Num1Comidas);
 				  //sprintf(text3,"%d",Widgets->STablero->Num2Comidas);
 				  //gtk_label_set_text(GTK_LABEL(Widgets->STablero->Comidas2), text3); //Cambia texto del turno actual
 				}

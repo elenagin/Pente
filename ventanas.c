@@ -354,3 +354,32 @@ void VentanaGanador(ptrWidgets Widgets)
   gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VenGan), vbox);
   gtk_widget_show_all(Widgets->SVentanas->VenGan);
 }
+
+void VentanaEmpate(ptrWidgets Widgets)
+{
+  GtkWidget *boton, *vbox, *label;
+
+  vbox= gtk_vbox_new(TRUE,5);
+  Widgets->SVentanas->VentanaEmpate = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW (Widgets->SVentanas->VentanaEmpate), "Empate");
+  gtk_window_set_position(GTK_WINDOW(Widgets->SVentanas->VentanaEmpate), GTK_WIN_POS_CENTER);
+  gtk_window_set_default_size(GTK_WINDOW(Widgets->SVentanas->VentanaEmpate),500,500);
+  gtk_window_set_resizable(GTK_WINDOW(Widgets->SVentanas->VentanaEmpate), FALSE);
+  gtk_container_border_width(GTK_CONTAINER(Widgets->SVentanas->VentanaEmpate),5);
+  label= gtk_label_new ("¡Hubo un empate!");
+  if (Widgets->STablero->Turno==1)
+    {
+      Widgets->STablero->Turno=2;
+    }
+  else if (Widgets->STablero->Turno==2)
+    {
+    Widgets->STablero->Turno=1;
+    }
+  boton=gtk_button_new_from_stock(GTK_STOCK_OK);
+  gtk_signal_connect(GTK_OBJECT(boton),"clicked",GTK_SIGNAL_FUNC(TerminarPartida), Widgets);
+  gtk_signal_connect(GTK_OBJECT(Widgets->SVentanas->VentanaEmpate),"destroy",GTK_SIGNAL_FUNC(Esconder5), Widgets); 
+  gtk_container_add(GTK_CONTAINER(vbox), label);
+  gtk_container_add(GTK_CONTAINER(vbox), boton);
+  gtk_container_add(GTK_CONTAINER(Widgets->SVentanas->VentanaEmpate), vbox);
+  gtk_widget_show_all(Widgets->SVentanas->VentanaEmpate);
+}
