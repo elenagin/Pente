@@ -1,4 +1,17 @@
-/***********FUNCIONES DE SEÑALES*************/
+/*
+ *@senales.h
+ *Este programa es el .h de senales.c ya que son módulos.
+ *Esto significa que incluye todas las funciones que no son static de
+ *senales.h
+ *Se hizo lo de indef y endif (es un if) para que si ya se declaró esta
+ *biblioteca, no se vuelva a declarar y haya problemas en el código
+ *@Karina
+ *@Elena
+ *@01/05/2018
+**/
+
+#indef senalesDEFINIDO
+
 void Pulsado(GtkWidget *Widget, gpointer data);
 void Abrir_menu_juego (GtkToolButton *toolbutton, gpointer data);
 void MenuGuardar(GtkWidget *Widget, gpointer data);
@@ -19,3 +32,6 @@ void Acerca_de(GtkWidget *Widget, gpointer data);
 void RecorreHistorial(GtkWidget *Widget, gpointer data);
 void on_button_clicked(GtkWidget *Widget, gpointer data);
 void SeguirAMano(GtkWidget *Widget, gpointer data);
+
+#define senalesDEFINIDO
+#endif
