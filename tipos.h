@@ -1,14 +1,20 @@
-/*******************************************
-*  @file tipos.h                           *
-*                                          *
-*  @brief Este archivo incluye todas las   *
-*         estructuras a utilizar en la     *
-*         desarrollo de la parte grafica   *
-*         de este proyecto.                *
-*  @Elena Ginebra                          *
-*  @Karina Almazán                         *
-*  @date 24/04/2018                        *
-*******************************************/
+
+/*
+ *@tipos.h
+ *Este programa es el .h de tipos.c ya que son módulos.
+ *Esto significa que incluye todas las funciones que no son static de 
+ *tipos.h
+ *En este caso específicamente incluye todas las estructuras a utilizar 
+ *en el desarrollo de la parte gráfica.
+ *Se hizo lo de indef y endif (es un if) para que si ya se declaró esta 
+ *biblioteca, no se vuelva a declarar y haya problemas en el código
+ *@Elena
+ *@Karina
+ *@01/05/2018
+**/
+
+
+#ifndef tiposDEFINIDO
 
 /*******************************************
 *   Estructura en donde se inluyen todos   *
@@ -79,3 +85,7 @@ typedef struct def_Widgets
   ptrOpciones SOpciones;
   ptrVentanas SVentanas;
 } tWidgets, *ptrWidgets;
+
+
+#define tiposDEFINIDO
+#endif
